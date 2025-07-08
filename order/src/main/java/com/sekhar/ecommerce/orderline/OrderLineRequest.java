@@ -1,4 +1,4 @@
-package com.sekhar.ecommerce.order;
+package com.sekhar.ecommerce.orderline;
 
 public record OrderLineRequest(
         Integer id,
