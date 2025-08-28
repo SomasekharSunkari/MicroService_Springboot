@@ -5,8 +5,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/payment
-    username: alibou
-    password: alibou
+    username: sekhar
+    password: sekhar
   jpa:
     hibernate:
       ddl-auto: create
@@ -22,4 +22,4 @@ spring:
         spring.json.type.mapping: paymentConfirmation:com.sekhar.ecommerce.Notification.PaymentNotificationRequest
 application:
   config:
-    product-url: http://localhost:8222/api/v1/products
+    product-url: http://localhost:8050/api/v1/products

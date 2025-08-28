@@ -1,7 +1,4 @@
-version: '3.8'
-
 services:
-
   postgresql:
     container_name: ms_pg_sql
     image: postgres
@@ -11,6 +8,7 @@ services:
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
+      - ./db_init_scripts:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     networks:
@@ -32,19 +30,36 @@ services:
       - microservices-net
     restart: unless-stopped
 
+#  zipkin:
+#    container_name: zipkin
+#    image: openzipkin/zipkin
+#    ports:
+#      - "9411:9411"
+#    networks:
+#      - microservices-net
+
   mongodb:
     image: mongo
     container_name: mongo_db
     ports:
-      - "27017:27017"
+      - 27017:27017
     volumes:
-      - mongo:/data/db
+      - mongo:/data
     environment:
-      MONGO_INITDB_ROOT_USERNAME: sekhar
-      MONGO_INITDB_ROOT_PASSWORD: sekhar
-    networks:
-      - microservices-net
-    restart: unless-stopped
+      - MONGO_INITDB_ROOT_USERNAME=sekhar
+      - MONGO_INITDB_ROOT_PASSWORD=sekhar
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo_express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=sekhar
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=sekhar
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
@@ -57,31 +72,20 @@ services:
     networks:
       - microservices-net
   kafka:
-      image: confluentinc/cp-kafka:latest
-      container_name: ms_kafka
-      ports:
-        - "9092:9092"
-      depends_on:
-        - zookeeper
-      environment:
-        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-        KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-        KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      networks:
-        - microservices-net
-  mongo-express:
-    image: mongo-express
-    container_name: mongo_express
-    restart: always
+    image: confluentinc/cp-kafka:6.2.0
+    container_name: ms_kafka
     ports:
-      - "8081:8081"
+      - "9092:9092"
+    depends_on:
+      - zookeeper
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: sekhar
-      ME_CONFIG_MONGODB_ADMINPASSWORD: sekhar
-      ME_CONFIG_MONGODB_SERVER: mongodb
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+#      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
     networks:
       - microservices-net
 
@@ -89,11 +93,8 @@ services:
     container_name: ms-mail-dev
     image: maildev/maildev
     ports:
-      - "1080:1080"
-      - "1025:1025"
-    networks:
-      - microservices-net
-    restart: unless-stopped
+      - 1080:1080
+      - 1025:1025
 
 networks:
   microservices-net:

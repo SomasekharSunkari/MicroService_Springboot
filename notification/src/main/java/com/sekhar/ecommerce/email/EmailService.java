@@ -28,7 +28,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class EmailService {
 
     private final JavaMailSender mailSender;
-    private SpringTemplateEngine templateEngine;
+    private final SpringTemplateEngine templateEngine;
 
     @Async
     public void sendPaymentSuccessEmail(
