@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class AuthService {
 
@@ -18,10 +20,11 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
 
-    public String saveUser(UserCredential credential) {
+
+    public Map<String, String> saveUser(UserCredential credential) {
         credential.setPassword(passwordEncoder.encode(credential.getPassword()));
         repository.save(credential);
-        return "user added to the system";
+        return Map.of("message", "user added to the system");
     }
 
     public String generateToken(String username) {

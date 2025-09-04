@@ -3,6 +3,8 @@ package com.sekhar.authservice.controller;
 
 import com.sekhar.authservice.dto.AuthRequest;
 import com.sekhar.authservice.entity.UserCredential;
+import com.sekhar.authservice.exceptions.UserNameAlreadyExistsException;
+import com.sekhar.authservice.repository.UserCredentialRepository;
 import com.sekhar.authservice.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,25 +12,36 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     @Autowired
     private AuthService service;
-
+    @Autowired
+    private UserCredentialRepository userCredentialRepository;
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public String addNewUser(@RequestBody UserCredential user) {
+    public Map<String, String> addNewUser(@RequestBody UserCredential user) throws Exception {
+        if(userCredentialRepository.findByNameIgnoreCase(user.getName()).isPresent()){
+            throw  new UserNameAlreadyExistsException("Username already Taken");
+        }
         return service.saveUser(user);
     }
 
     @PostMapping("/token")
-    public String getToken(@RequestBody AuthRequest authRequest) {
+    public Map<String,String> getToken(@RequestBody AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        System.out.println("After manger");
+        System.out.println(authenticate);
+        System.out.println("Before Manager");
+
         if (authenticate.isAuthenticated()) {
-            return service.generateToken(authRequest.getUsername());
+            String token= service.generateToken(authRequest.getUsername());
+            return Map.of("token",token);
         } else {
             throw new RuntimeException("invalid access");
         }

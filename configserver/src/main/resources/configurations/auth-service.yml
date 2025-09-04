@@ -1,14 +1,18 @@
 server:
   port: 8787
+
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/users
-    username: sekhar
-    password: sekhar
+    url: jdbc:postgresql://database-1.c9yig4a82pxl.eu-north-1.rds.amazonaws.com:5432/users
+    username: postgres
+    password: Sekharamma123
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    database: postgresql
-
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

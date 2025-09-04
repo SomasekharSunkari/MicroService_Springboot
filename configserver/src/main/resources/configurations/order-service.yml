@@ -2,9 +2,9 @@ server:
   port: 8070
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/orders
-    username: sekhar
-    password: sekhar
+    url: jdbc:postgresql://database-1.c9yig4a82pxl.eu-north-1.rds.amazonaws.com:5432/orders
+    username: postgres
+    password: Sekharamma123
     driver-class-name: org.postgresql.Driver
 
   jpa:

@@ -1,5 +1,25 @@
 spring:
-   config:
-     import: optional:configserver:http://localhost:8888
-   application:
-       name: product-service
+  application:
+     name: product-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/product
+    username: sekhar
+    password: sekhar
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+
+  flyway:
+    baseline-description: "init"
+    baseline-on-migrate: true
+    enabled: true
+    baseline-version: 0
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+
+server:
+  port: 8050

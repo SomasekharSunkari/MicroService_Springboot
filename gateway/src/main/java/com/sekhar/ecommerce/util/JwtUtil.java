@@ -1,4 +1,5 @@
 package com.sekhar.ecommerce.util;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 
@@ -15,9 +16,18 @@ public class JwtUtil {
 
         Jwts.parser().setSigningKey(getSignKey()).build().parseSignedClaims(token);
     }
+    public  String extractUsername(final  String token){
+        return  extractClaims(token).getSubject();
+    }
     private Key getSignKey(){
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+    public Claims extractClaims(String token){
+        return  Jwts.parser().setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
 }
