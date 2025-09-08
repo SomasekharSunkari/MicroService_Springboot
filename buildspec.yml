@@ -22,7 +22,7 @@ phases:
     commands:
       - echo "Build Completed"
       - echo "Pushing Docker images to ECR"
-      - docker push $REPO_URI:latest
+      # - docker push $REPO_URI:latest
       - docker push $REPO_URI:$IMAGE_TAG
       - echo "Writing image definitions file"
       - printf '[{"name":"config-service","imageUri":"%s"}]' $REPO_URI:$IMAGE_TAG > imagedefinitions.json
