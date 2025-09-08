@@ -1,16 +1,6 @@
 version: 0.2
-env:
-  variables:
-      IMAGE_REPO_NAME: product-api
-      IMAGE_TAG: latest
 
 phases:
-  # install:
-  #   runtime-versions:
-  #     java: corretto17
-  #   commands:
-  #     - echo "Installing dependencies"
-
   pre_build:
     commands:
       - cd configserver
@@ -18,29 +8,30 @@ phases:
       - echo "Logging into Amazon ECR"
       - aws --version
       - REPO_URI=068856380156.dkr.ecr.eu-north-1.amazonaws.com/product-api
-      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 068856380156.dkr.ecr.eu-north-1.amazonaws.com
+      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin $REPO_URI
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
 
   build:
     commands:
       - echo "Building configserver Using Docker"
       - docker build -t $REPO_URI:latest .
-      - docker tag $REPO_URL:latest $REPO_URI:IMAGE_TAG
+      - docker tag $REPO_URI:latest $REPO_URI:$IMAGE_TAG
       - mvn clean test
 
   post_build:
     commands:
       - echo "Build Completed"
-      - echo "Pushing Artifacts"
+      - echo "Pushing Docker images to ECR"
       - docker push $REPO_URI:latest
-      - docker push $REPO_URI:IMAGE_TAG
-      - echo Wrting image defintions file
-      - printf '[{"name":"config-service","imageUri":"%s"}]' $REPO_URI:IMAGE_TAG > imagedefinitions.json
+      - docker push $REPO_URI:$IMAGE_TAG
+      - echo "Writing image definitions file"
+      - printf '[{"name":"config-service","imageUri":"%s"}]' $REPO_URI:$IMAGE_TAG > imagedefinitions.json
       - DOCKER_CONTAINER_NAME=product-api
-      - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPO_URI:IMAGE_TAG
+      - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPO_URI:$IMAGE_TAG
       - echo $DOCKER_CONTAINER_NAME
-      - echo printing imagedefinitions.json
+      - echo "Printing imagedefinitions.json"
       - cat imagedefinitions.json
+
 artifacts:
   files:
     - imagedefinitions.json
@@ -52,12 +43,110 @@ reports:
       - "**/target/surefire-reports/*.xml"
     base-directory: .
     discard-paths: no
-# batch:
-#   fast-fail: false
-#   build-list:
-#     - identifier: configserver
-#       buildspec: configserver/buildspec.yml
-#     - identifier: order
-#       buildspec: service-order/buildspec.yml
-#     - identifier: payment
-#       buildspec: service-payment/buildspec.yml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# version: 0.2
+# # env:
+# #   variables:
+# #       IMAGE_REPO_NAME: product-api
+# #       IMAGE_TAG: latest
+
+# phases:
+#   # install:
+#   #   runtime-versions:
+#   #     java: corretto17
+#   #   commands:
+#   #     - echo "Installing dependencies"
+
+#   pre_build:
+#     commands:
+#       - cd configserver
+#       - mvn clean install
+#       - echo "Logging into Amazon ECR"
+#       - aws --version
+#       - REPO_URI=068856380156.dkr.ecr.eu-north-1.amazonaws.com/product-api
+#       - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 068856380156.dkr.ecr.eu-north-1.amazonaws.com
+#       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+
+#   build:
+#     commands:
+#       - echo "Building configserver Using Docker"
+#       - docker build -t $REPO_URI:latest .
+#       - docker tag $REPO_URL:latest $REPO_URI:IMAGE_TAG
+#       - mvn clean test
+
+#   post_build:
+#     commands:
+#       - echo "Build Completed"
+#       - echo "Pushing Artifacts"
+#       - docker push $REPO_URI:latest
+#       - docker push $REPO_URI:IMAGE_TAG
+#       - echo Wrting image defintions file
+#       - printf '[{"name":"config-service","imageUri":"%s"}]' $REPO_URI:IMAGE_TAG > imagedefinitions.json
+#       - DOCKER_CONTAINER_NAME=product-api
+#       - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPO_URI:IMAGE_TAG
+#       - echo $DOCKER_CONTAINER_NAME
+#       - echo printing imagedefinitions.json
+#       - cat imagedefinitions.json
+# artifacts:
+#   files:
+#     - imagedefinitions.json
+#     - target/configserver-1.jar
+
+# reports:
+#   junit-reports:
+#     files:
+#       - "**/target/surefire-reports/*.xml"
+#     base-directory: .
+#     discard-paths: no
+# # batch:
+# #   fast-fail: false
+# #   build-list:
+# #     - identifier: configserver
+# #       buildspec: configserver/buildspec.yml
+# #     - identifier: order
+# #       buildspec: service-order/buildspec.yml
+# #     - identifier: payment
+# #       buildspec: service-payment/buildspec.yml
