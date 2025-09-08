@@ -21,15 +21,6 @@ spring:
     baseline-version: 0
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"   # expose all endpoints
-        # or specific endpoints: include: health,info
-  endpoint:
-    health:
-      show-details: always
 
 server:
   port: 8050

@@ -4,11 +4,11 @@ phases:
   pre_build:
     commands:
       - echo "Starting Pre-Build Phase"
-      - cd configserver
+      - cd order
       - mvn clean install
       - echo "Logging into Amazon ECR"
       - aws --version
-      - REPO_URI=068856380156.dkr.ecr.eu-north-1.amazonaws.com/product-api
+      - REPO_URI=068856380156.dkr.ecr.eu-north-1.amazonaws.com/order-service
       - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin $REPO_URI
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
       - echo "Pre-Build Completed"
@@ -28,7 +28,7 @@ phases:
       - echo "Pushing Docker image to ECR"
       - docker push $REPO_URI:$IMAGE_TAG
       - echo "Creating image definitions file for CodePipeline"
-      - printf '[{"name":"config-server","imageUri":"%s"}]' $REPO_URI:$IMAGE_TAG > ../imagedefinitions.json
+      - printf '[{"name":"order-service","imageUri":"%s"}]' $REPO_URI:$IMAGE_TAG > ../imagedefinitions.json
       - echo "Printing imagedefinitions.json"
       - cat ../imagedefinitions.json
       - cd ..
