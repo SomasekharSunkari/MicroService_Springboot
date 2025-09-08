@@ -97,7 +97,7 @@ const NavBar = ({
     <nav className="navbar">
       <div className="nav-left">
         <Link to="/" className="nav-brand">
-          Product Catalog
+          Product API
         </Link>
       </div>
       <div className="nav-buttons">
