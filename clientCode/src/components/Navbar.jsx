@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './NavBar.css';
 
 const NavBar = ({ 
   cartItemCount, 
-  setShowCart, 
-  setShowAddProduct, 
   isAuthenticated, 
   setIsAuthenticated 
 }) => {
