@@ -37,8 +37,6 @@ phases:
 artifacts:
   files:
     - imagedefinitions.json
-    - configserver/target/authservice-1.jar
-
 reports:
   junit-reports:
     files:
