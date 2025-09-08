@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import NavBar from './components/NavBar.jsx';
+import NavBar from './components/Navbar.jsx';
 import ProductList from './components/ProductList';
 import Cart from './components/Cart';
 import AddProduct from './components/AddProduct';
