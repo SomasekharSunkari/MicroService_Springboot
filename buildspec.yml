@@ -18,13 +18,18 @@ phases:
       - mvn clean install -DskipTests
       - sksjdkf
       - sdfljkds
-      - cd ..
+      - mvn clean test
 
   post_build:
     commands:
       - echo "Build Completed"
       - echo "Pushing Artifacts"
-
+reports:
+  junit-reports:
+    files:
+      - "**/target/surefire-reports/*.xml"
+    base-directory: .
+    discard-paths: no
 # batch:
 #   fast-fail: false
 #   build-list:
