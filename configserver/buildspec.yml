@@ -6,5 +6,5 @@ phases:
       - cd configserver
       - mvn clean package -DskipTests
 artifacts:
-  files:
+  files: 
     - configserver/target/*.jar
