@@ -4,7 +4,7 @@ batch:
   build-list:
     - identifier: configserver
       buildspec: configserver/buildspec.yml
-    # - identifier: order
-    #   buildspec: service-order/buildspec.yml
-    # - identifier: payment
-    #   buildspec: service-payment/buildspec.yml
+    - identifier: order
+      buildspec: service-order/buildspec.yml
+    - identifier: payment
+      buildspec: service-payment/buildspec.yml
