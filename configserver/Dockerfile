@@ -1,7 +1,7 @@
 # ---------- STAGE 1: Build ----------
 FROM maven:3.9.8-eclipse-temurin-21 AS builder
 WORKDIR /app
-
+   
 # Copy pom.xml and download dependencies first (for caching)
 COPY pom.xml .
 RUN mvn dependency:go-offline -B

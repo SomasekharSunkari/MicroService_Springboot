@@ -1,5 +1,5 @@
 configserver/mvnw.*
-customer/mvnw.cmd
-discovery/mvnw.cmd
-order/mvnw.cmd
-product/mvnw.cmd
+customer/mvnw.*
+discovery/mvnw.*
+order/mvnw.*
+product/mvnw.*
