@@ -1,10 +1,34 @@
 version: 0.2
-batch:
-  fast-fail: false
-  build-list:
-    - identifier: configserver
-      buildspec: configserver/buildspec.yml
-    - identifier: order
-      buildspec: service-order/buildspec.yml
-    - identifier: payment
-      buildspec: service-payment/buildspec.yml
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+    commands:
+      - echo "Installing dependencies"
+
+  pre_build:
+    commands:
+      - echo "Starting pre-build tasks"
+
+  build:
+    commands:
+      - echo "Building configserver"
+      - cd configserver
+      - mvn clean install -DskipTests
+      - cd ..
+
+  post_build:
+    commands:
+      - echo "Build Completed"
+      - echo "Pushing Artifacts"
+
+# batch:
+#   fast-fail: false
+#   build-list:
+#     - identifier: configserver
+#       buildspec: configserver/buildspec.yml
+#     - identifier: order
+#       buildspec: service-order/buildspec.yml
+#     - identifier: payment
+#       buildspec: service-payment/buildspec.yml
