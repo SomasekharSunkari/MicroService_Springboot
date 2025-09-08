@@ -1,0 +1,10 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - echo "Building Auth Service"
+      - cd configserver
+      - mvn clean package -DskipTests
+artifacts:
+  files:
+    - configserver/target/*.jar
