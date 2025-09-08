@@ -1,0 +1,47 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "Starting Pre-Build Phase"
+      - cd product
+      - mvn clean install
+      - echo "Logging into Amazon ECR"
+      - aws --version
+      - REPO_URI=068856380156.dkr.ecr.eu-north-1.amazonaws.com/order-service
+      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin $REPO_URI
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - echo "Pre-Build Completed"
+
+  build:
+    commands:
+      - echo "Building Docker image for configserver"
+      - docker build -t $REPO_URI:latest .
+      - docker tag $REPO_URI:latest $REPO_URI:$IMAGE_TAG
+      - echo "Running unit tests"
+      - mvn clean test
+      - echo "Build Phase Completed"
+
+  post_build:
+    commands:
+      - echo "Post-Build Phase Started"
+      - echo "Pushing Docker image to ECR"
+      - docker push $REPO_URI:$IMAGE_TAG
+      - echo "Creating image definitions file for CodePipeline"
+      - printf '[{"name":"order-service","imageUri":"%s"}]' $REPO_URI:$IMAGE_TAG > ../imagedefinitions.json
+      - echo "Printing imagedefinitions.json"
+      - cat ../imagedefinitions.json
+      - cd ..
+      - echo "Post-Build Phase Completed"
+
+artifacts:
+  files:
+    - imagedefinitions.json
+    - configserver/target/configserver-1.jar
+
+reports:
+  junit-reports:
+    files:
+      - "**/target/surefire-reports/*.xml"
+    base-directory: .
+    discard-paths: no
