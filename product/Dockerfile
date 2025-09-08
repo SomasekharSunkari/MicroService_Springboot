@@ -4,3 +4,4 @@ COPY target/product-1.jar app.jar
 EXPOSE 8050
 ENTRYPOINT ["java","-jar","app.jar"] 
 #can be optimsied using multi stage build
+ 
