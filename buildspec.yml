@@ -34,8 +34,9 @@ phases:
 
 artifacts:
   files:
-    - imagedefinitions.json
-    - target/configserver-1.jar
+    - configserver/imagedefinitions.json
+    - configserver/target/configserver-1.jar
+
 
 reports:
   junit-reports:
