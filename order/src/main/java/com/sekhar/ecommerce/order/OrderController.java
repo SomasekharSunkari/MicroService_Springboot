@@ -15,9 +15,19 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final JwtService jwtService;
 
     @PostMapping
-    public ResponseEntity<Integer> createOrder(@RequestBody @Valid OrderRequest request) {
+    public ResponseEntity<Integer> createOrder(@RequestBody @Valid OrderRequest request,@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+
+        // Extract customerId from JWT
+        String customerId = jwtService.extractCustomerId(token);
+
+        // Inject into request
+        request.setCustomerId(customerId);
+        System.out.println(authHeader +"  While creating the order ok ");
+        System.out.println("Error before creating order also");
         return ResponseEntity.ok(orderService.createOrder(request));
     }
 

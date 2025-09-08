@@ -1,32 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Orders.css';
+import { apiFetch } from '../utils/api';
 
 const Orders = () => {
-  // Mock orders data - in real app this would come from an API
-  const [orders] = useState([
-    {
-      id: '1',
-      date: '2023-09-02',
-      total: 899.97,
-      status: 'Delivered',
-      items: [
-        { id: 1, name: 'Smartphone X', quantity: 1, price: 699.99 },
-        { id: 2, name: 'Wireless Headphones', quantity: 1, price: 199.98 }
-      ]
-    },
-    {
-      id: '2',
-      date: '2023-09-01',
-      total: 1299.99,
-      status: 'Processing',
-      items: [
-        { id: 3, name: 'Laptop Pro', quantity: 1, price: 1299.99 }
-      ]
-    }
-  ]);
-
+  const [ordersList, setOrdersList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await apiFetch('/api/v1/orders');
+        
+        // Take only first 10 orders and map to simplified objects
+        const simplifiedOrders = Array.isArray(data) 
+          ? data.slice(0, 10).map(order => ({
+              id: order.id,
+              reference: order.reference,
+              amount: order.amount,
+              paymentMethod: order.paymentMethod
+            }))
+          : [];
+
+        setOrdersList(simplifiedOrders);
+      } catch (e) {
+        setError(e.message || 'Failed to load orders');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  if (loading) return <div className="orders"><h2>My Orders</h2><p>Loading...</p></div>;
+  if (error) return <div className="orders"><h2>My Orders</h2><p style={{ color: 'red' }}>{error}</p></div>;
 
   return (
     <div className="orders">
@@ -34,34 +42,28 @@ const Orders = () => {
         <button className="back-btn" onClick={() => navigate('/')}>
           ← Back to Products
         </button>
-        <h2>My Orders</h2>
+        <h2>Recent Orders</h2>
       </div>
 
-      {orders.length === 0 ? (
+      {ordersList.length === 0 ? (
         <p>No orders found</p>
       ) : (
         <div className="orders-list">
-          {orders.map(order => (
+          {ordersList.map(order => (
             <div key={order.id} className="order-card">
               <div className="order-header">
-                <div>
-                  <h3>Order #{order.id}</h3>
-                  <p className="order-date">Placed on {order.date}</p>
-                </div>
-                <span className={`order-status ${order.status.toLowerCase()}`}>
-                  {order.status}
+                <h3>Order #{order.id}</h3>
+                <span className="order-reference">
+                  Ref: {order.reference || 'N/A'}
                 </span>
               </div>
-              <div className="order-items">
-                {order.items.map(item => (
-                  <div key={item.id} className="order-item">
-                    <span>{item.name} x {item.quantity}</span>
-                    <span>${item.price.toFixed(2)}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="order-total">
-                <strong>Total:</strong> ${order.total.toFixed(2)}
+              <div className="order-summary">
+                <div className="order-info">
+                  <span>Payment: {order.paymentMethod}</span>
+                  <span className="amount">
+                    ${order.amount?.toFixed(2) || 0}
+                  </span>
+                </div>
               </div>
             </div>
           ))}

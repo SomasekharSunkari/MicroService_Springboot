@@ -6,6 +6,7 @@ import Cart from './components/Cart';
 import AddProduct from './components/AddProduct';
 import Orders from './components/Orders';
 import Checkout from './components/Checkout';
+import OrderConfirmation from './components/OrderConfirmation';
 import './App.css';
 
 function App() {
@@ -58,8 +59,9 @@ function App() {
     setShowAddProduct(false);
   };
 
-  const handleCompleteCheckout = (setCartItems) => {
+  const handleCompleteCheckout = (setCartItems, orderReference) => {
     setCartItems([]);
+    // Navigation will be handled in Checkout component
   };
 
   return (
@@ -75,26 +77,36 @@ function App() {
         <main style={{ paddingTop: '80px' }}>
           <Routes>
             <Route path="/" element={<ProductList addToCart={addToCart} />} />
-            <Route path="/cart" element={
-              <Cart 
-                cartItems={cartItems} 
-                removeFromCart={removeFromCart}
-                updateQuantity={updateCartQuantity}
-              />
-            } />
-            <Route path="/orders" element={
-              isAuthenticated ? <Orders /> : <Navigate to="/" />
-            } />
-            <Route path="/checkout" element={
-              cartItems.length ? (
-                <Checkout 
+            <Route 
+              path="/cart" 
+              element={
+                <Cart 
                   cartItems={cartItems} 
-                  onComplete={() => handleCompleteCheckout(setCartItems)}
+                  removeFromCart={removeFromCart}
+                  updateQuantity={updateCartQuantity}
                 />
-              ) : (
-                <Navigate to="/cart" />
-              )
-            } />
+              } 
+            />
+            <Route 
+              path="/orders" 
+              element={
+                isAuthenticated ? <Orders /> : <Navigate to="/" />
+              }
+            />
+            <Route 
+              path="/checkout" 
+              element={
+                cartItems.length ? (
+                  <Checkout 
+                    cartItems={cartItems} 
+                    onComplete={(orderRef) => handleCompleteCheckout(setCartItems, orderRef)}
+                  />
+                ) : (
+                  <Navigate to="/cart" />
+                )
+              }
+            />
+            <Route path="/order-confirmation" element={<OrderConfirmation />} />
           </Routes>
           
           {showAddProduct && (

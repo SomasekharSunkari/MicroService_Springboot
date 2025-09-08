@@ -3,9 +3,8 @@ package com.sekhar.ecommerce.kafka;
 
 import com.sekhar.ecommerce.email.EmailService;
 import com.sekhar.ecommerce.kafka.order.OrderConfirmation;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sekhar.ecommerce.kafka.payment.PaymentConfirmation;
-import com.sekhar.ecommerce.notification.Notification;
-import com.sekhar.ecommerce.notification.NotificationRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,46 +22,40 @@ import static java.lang.String.format;
 @Slf4j
 public class NotificationConsumer {
 
-    private final NotificationRepository notificationRepository;
     private final EmailService emailService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     @KafkaListener(topics = "payment-topic" , groupId = "paymentGroup")
-    public void consumePaymentSuccessNotification(PaymentConfirmation  paymentConfirmation) throws MessagingException {
-        log.info(format("Consuming the message from payment-topic Topic:: %s", paymentConfirmation));
-        notificationRepository.save(
-                Notification.builder()
-                        .type(PAYMENT_CONFIRMATION)
-                        .notificationDate(LocalDateTime.now())
-                        .paymentConfirmation(paymentConfirmation)
-                        .build()
-        );
-        var customerName = paymentConfirmation.customerFirstname() + " " + paymentConfirmation.customerLastname();
+    public void consumePaymentSuccessNotification(PaymentConfirmation paymentConfirmation) throws MessagingException {
+        try {
+            log.info(format("Consuming the message from payment-topic Topic:: %s", paymentConfirmation));
+            var customerName = paymentConfirmation.customerFirstname() + " " + paymentConfirmation.customerLastname();
         emailService.sendPaymentSuccessEmail(
                 paymentConfirmation.customerEmail(),
                 customerName,
                 paymentConfirmation.amount(),
                 paymentConfirmation.orderReference()
         );
+        } catch (Exception e) {
+            log.error("Failed to parse payment message: {}", paymentConfirmation, e);
+        }
     }
 
     @KafkaListener(topics = "order-topic" ,groupId = "orderGroup")
     public void consumeOrderConfirmationNotifications(OrderConfirmation orderConfirmation) throws MessagingException {
-        log.info(format("Consuming the message from order-topic Topic:: %s", orderConfirmation));
-        notificationRepository.save(
-                Notification.builder()
-                        .type(ORDER_CONFIRMATION)
-                        .notificationDate(LocalDateTime.now())
-                        .orderConfirmation(orderConfirmation)
-                        .build()
-        );
-        var customerName = orderConfirmation.customer().firstname() + " " + orderConfirmation.customer().lastname();
-        emailService.sendOrderConfirmationEmail(
-                orderConfirmation.customer().email(),
-                customerName,
-                orderConfirmation.totalAmount(),
-                orderConfirmation.orderReference(),
-                orderConfirmation.products()
-        );
+        try {
+            log.info(format("Consuming the message from order-topic Topic:: %s", orderConfirmation));
+            var customerName = orderConfirmation.customer().firstname() + " " + orderConfirmation.customer().lastname();
+            emailService.sendOrderConfirmationEmail(
+                    orderConfirmation.customer().email(),
+                    customerName,
+                    orderConfirmation.totalAmount(),
+                    orderConfirmation.orderReference(),
+                    orderConfirmation.products()
+            );
+        } catch (Exception e) {
+            log.error("Failed to parse order message: {}", orderConfirmation, e);
+        }
     }
 }

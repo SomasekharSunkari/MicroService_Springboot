@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Checkout.css';
+import { apiFetch } from '../utils/api';
 
 const Checkout = ({ cartItems, onComplete }) => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ const Checkout = ({ cartItems, onComplete }) => {
     expiryDate: '',
     cvv: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -25,11 +28,49 @@ const Checkout = ({ cartItems, onComplete }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically process the payment and order
-    alert('Order placed successfully!');
-    onComplete();
+    setLoading(true);
+    setError('');
+
+    try {
+      const paymentData = {
+        amount: total,
+        paymentMethod: 'CREDIT_CARD',
+        customer: {
+          id: "1",
+          firstname: formData.firstName,
+          lastname: formData.lastName,
+          email: formData.email
+        }
+      };
+
+      const response = await fetch('http://localhost:8222/api/v1/payments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`
+        },
+        body: JSON.stringify(paymentData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Payment failed');
+      }
+
+      const paymentResponse = await response.json();
+      
+      // Call onComplete and navigate to confirmation
+      onComplete(paymentResponse.orderReference);
+      navigate('/order-confirmation', { 
+        state: { orderReference: paymentResponse.orderReference }
+      });
+
+    } catch (err) {
+      setError(err.message || 'An error occurred during checkout');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -38,6 +79,7 @@ const Checkout = ({ cartItems, onComplete }) => {
         ← Back to Cart
       </button>
       <h2>Checkout</h2>
+      {error && <div className="error-message">{error}</div>}
       <div className="checkout-container">
         <form onSubmit={handleSubmit}>
           <div className="form-section">
@@ -113,8 +155,19 @@ const Checkout = ({ cartItems, onComplete }) => {
             </div>
           </div>
 
-          <button type="submit" className="place-order-btn">
-            Place Order
+          <button 
+            type="submit" 
+            className="place-order-btn" 
+            disabled={loading}
+          >
+            {loading ? (
+              <div className="loading-state">
+                <span className="spinner"></span>
+                Processing Order...
+              </div>
+            ) : (
+              'Place Order'
+            )}
           </button>
         </form>
       </div>

@@ -35,12 +35,12 @@ public class AuthController {
     @PostMapping("/token")
     public Map<String,String> getToken(@RequestBody AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-        System.out.println("After manger");
-        System.out.println(authenticate);
-        System.out.println("Before Manager");
-
         if (authenticate.isAuthenticated()) {
-            String token= service.generateToken(authRequest.getUsername());
+            UserCredential user = userCredentialRepository
+                    .findByNameIgnoreCase(authRequest.getUsername())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            String token= service.generateToken(authRequest.getUsername(),String.valueOf(user.getId()));
             return Map.of("token",token);
         } else {
             throw new RuntimeException("invalid access");
@@ -51,5 +51,20 @@ public class AuthController {
     public String validateToken(@RequestParam("token") String token) {
         service.validateToken(token);
         return "Token is valid";
+    }
+
+    @GetMapping("/users/{id}")
+    public UserCredential getUserById(@PathVariable("id") Integer id){
+        return userCredentialRepository.findById(id).orElseThrow();
+    }
+
+    @GetMapping("/users/by-name/{name}")
+    public UserCredential getUserByName(@PathVariable("name") String name){
+        return userCredentialRepository.findByNameIgnoreCase(name).orElseThrow();
+    }
+
+    @GetMapping("/users/by-email/{email}")
+    public UserCredential getUserByEmail(@PathVariable("email") String email){
+        return userCredentialRepository.findByEmailIgnoreCase(email).orElseThrow();
     }
 }

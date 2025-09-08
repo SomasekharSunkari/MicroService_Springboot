@@ -10,6 +10,7 @@ public record ProductResponse(
          BigDecimal price,
          int categoryId,
          String catrgoryName,
-         String categoryDescription
+         String categoryDescription,
+         String image_url
 ) {
 }

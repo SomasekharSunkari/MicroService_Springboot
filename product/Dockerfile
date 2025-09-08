@@ -1,5 +1,5 @@
-FROM openjdk:21
+FROM openjdk:21-slim
 WORKDIR /app
-COPY target/product-1.jar product-1.jar
+COPY target/product-1.jar app.jar
 EXPOSE 8050
-ENTRYPOINT ["java","-jar","product-1.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]

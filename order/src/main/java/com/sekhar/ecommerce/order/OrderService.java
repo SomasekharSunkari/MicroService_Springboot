@@ -28,10 +28,19 @@ public class OrderService {
     private final OrderProducer orderProducer;
 
     public Integer createOrder(@Valid OrderRequest request) {
-        var customer = customerClient.findCustomerById(request.customerId()).orElseThrow(()->new BussinessException("Cannot create order:: No customer exists with id "+request.customerId()));
-      var purchasedProducts =   this.productClient.purchaseProducts(request.products());
-        var order = this.orderRepository.save(orderMapper.toOrder(request));
-        for (PurchaseRequest purchaseRequest : request.products()) {
+        var customer = customerClient.findCustomerById(request.getCustomerId()).orElseThrow(()->new BussinessException("Cannot create order:: No customer exists with id "+request.getCustomerId()));
+        System.out.println("Customer id before eror");
+        var purchasedProducts = this.productClient.purchaseProducts(request.getProducts());
+        System.out.println(purchasedProducts);
+
+        // Generate server-side order reference (Option A)
+        String generatedReference = "ORD-" + System.currentTimeMillis() + "-" + java.util.UUID.randomUUID().toString().substring(0,8).toUpperCase();
+        System.out.println(generatedReference);
+        var order = orderMapper.toOrder(request);
+        order.setReference(generatedReference);
+        order = this.orderRepository.save(order);
+        System.out.println("Order ID is "+ order.getId());
+        for (PurchaseRequest purchaseRequest : request.getProducts()) {
             orderLineService.saveOrderLine(
                     new OrderLineRequest(
                             null,
@@ -40,13 +49,11 @@ public class OrderService {
                             purchaseRequest.quantity()
                     )
             );
-
-
         }
         orderProducer.sendOrderConfirmation(new OrderConfirmation(
-                request.reference(),
-                request.amount(),
-                request.paymentMethod(),
+                order.getReference(),
+                request.getAmount(),
+                request.getPaymentMethod(),
                 customer,
                 purchasedProducts
         ));

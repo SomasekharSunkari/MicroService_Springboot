@@ -105,9 +105,9 @@ const NavBar = ({
       <div className="nav-buttons">
         {isAuthenticated && (
           <>
-            <button className="add-product-btn" onClick={() => setShowAddProduct(true)}>
+            {/* <button className="add-product-btn" onClick={() => setShowAddProduct(true)}>
               Add Product
-            </button>
+            </button> */}
             <Link to="/orders" className="orders-btn">
               My Orders
             </Link>

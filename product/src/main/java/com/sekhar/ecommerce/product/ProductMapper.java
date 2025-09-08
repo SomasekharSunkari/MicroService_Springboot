@@ -23,7 +23,9 @@ public class ProductMapper {
                 product.getPrice(),
                 product.getCategory().getId(),
                 product.getCategory().getName(),
-                product.getCategory().getDescription()
+                product.getCategory().getDescription(),
+                product.getImage_url()
+
         );
     }
 

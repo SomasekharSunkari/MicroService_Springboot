@@ -1,7 +1,7 @@
 .orders {
-  padding: 1rem;
   max-width: 800px;
   margin: 0 auto;
+  padding: 20px;
 }
 
 .orders-header {
@@ -11,6 +11,17 @@
   margin-bottom: 20px;
 }
 
+.back-btn {
+  background: none;
+  border: none;
+  color: #4299e1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 1rem;
+}
+
 .orders-list {
   display: flex;
   flex-direction: column;
@@ -18,84 +29,57 @@
 }
 
 .order-card {
-  margin-bottom: 1rem;
-  padding: 1rem;
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
 }
 
 .order-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-.order-date {
-  color: #666;
+.order-header h3 {
+  margin: 0;
+  color: #2d3748;
+}
+
+.order-reference {
+  color: #718096;
   font-size: 0.9rem;
-  margin-top: 4px;
 }
 
-.order-status {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-weight: 500;
+.order-summary {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 10px;
 }
 
-.order-status.delivered {
-  background-color: #C6F6D5;
-  color: #22543D;
-}
-
-.order-status.processing {
-  background-color: #FEEBC8;
-  color: #744210;
-}
-
-.order-items {
-  margin: 15px 0;
-}
-
-.order-item {
+.order-info {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
-  color: #4A5568;
+  align-items: center;
+  color: #4a5568;
 }
 
-.order-total {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
-  text-align: right;
-  font-size: 1.1rem;
+.amount {
+  font-weight: bold;
+  color: #2d3748;
 }
 
-@media screen and (max-width: 768px) {
+@media (max-width: 480px) {
   .order-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: 5px;
   }
 
-  .order-status {
-    align-self: flex-start;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .orders {
-    padding-bottom: 80px;
-  }
-
-  .order-item {
+  .order-info {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.25rem;
+    gap: 5px;
   }
 }

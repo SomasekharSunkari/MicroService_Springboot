@@ -18,6 +18,11 @@ public class UserCredential {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    private String firstname;
+    private String lastname;
     private String email;
     private String password;
+    private String street;
+    private String houseNumber;
+    private String zipCode;
 }

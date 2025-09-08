@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.sekhar</groupId>
 	<artifactId>payment</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1T</version>
 	<name>payment</name>
 	<description>payment</description>
 	<url/>

@@ -11,11 +11,9 @@ public class Ordermapper {
             return null;
         }
         return Order.builder()
-                .id(request.id())
-                .reference(request.reference())
-                .totalAmount(request.amount())
-                .paymentMethod(request.paymentMethod())
-                .customerId(request.customerId())
+                .totalAmount(request.getAmount())
+                .paymentMethod(request.getPaymentMethod())
+                .customerId(request.getCustomerId())
                 .build();
     }
 

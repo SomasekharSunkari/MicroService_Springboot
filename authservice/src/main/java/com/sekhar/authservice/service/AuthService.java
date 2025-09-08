@@ -27,13 +27,14 @@ public class AuthService {
         return Map.of("message", "user added to the system");
     }
 
-    public String generateToken(String username) {
-        return jwtService.generateToken(username);
+    public String generateToken(String username,String customerId) {
+        return jwtService.generateToken(username,customerId);
     }
 
     public void validateToken(String token) {
         jwtService.validateToken(token);
     }
+
 
 
 }
