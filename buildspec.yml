@@ -16,6 +16,8 @@ phases:
       - echo "Building configserver"
       - cd configserver
       - mvn clean install -DskipTests
+      - sksjdkf
+      - sdfljkds
       - cd ..
 
   post_build:
