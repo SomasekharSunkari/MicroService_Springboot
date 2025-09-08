@@ -1,5 +1,32 @@
 spring:
-  config:
-    import: optional:configserver:http://localhost:8888
   application:
     name: payment-service
+  config:
+    product-url: http://localhost:8050/api/v1/products
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://database-1.c9yig4a82pxl.eu-north-1.rds.amazonaws.com:5432/payment
+    username: postgres
+    password: Sekharamma123
+
+  jpa:
+    hibernate:
+      ddl-auto: update   
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true       
+    properties:
+      hibernate:
+        format_sql: true 
+
+  kafka:
+    producer:
+      bootstrap-servers: b-3.priductapicluster.jbxukd.c4.kafka.eu-north-1.amazonaws.com:9092,b-1.priductapicluster.jbxukd.c4.kafka.eu-north-1.amazonaws.com:9092,b-2.priductapicluster.jbxukd.c4.kafka.eu-north-1.amazonaws.com:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: paymentConfirmation:com.sekhar.ecommerce.Notification.PaymentNotificationRequest
+
+server:
+  port: 8060
