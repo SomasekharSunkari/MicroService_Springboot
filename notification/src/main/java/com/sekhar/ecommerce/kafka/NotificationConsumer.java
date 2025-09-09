@@ -3,7 +3,6 @@ package com.sekhar.ecommerce.kafka;
 
 import com.sekhar.ecommerce.email.EmailService;
 import com.sekhar.ecommerce.kafka.order.OrderConfirmation;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sekhar.ecommerce.kafka.payment.PaymentConfirmation;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import static java.lang.String.format;
 public class NotificationConsumer {
 
     private final EmailService emailService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     @KafkaListener(topics = "payment-topic" , groupId = "paymentGroup")
