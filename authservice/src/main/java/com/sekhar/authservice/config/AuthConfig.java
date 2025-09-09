@@ -30,6 +30,7 @@ public class AuthConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/v1/auth/register",
+                                "/actuator/health",
                                 "/api/v1/auth/token",
                                 "/api/v1/auth/validate/**",
                                 "/api/v1/auth/users/**"

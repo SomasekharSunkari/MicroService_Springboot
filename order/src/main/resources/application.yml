@@ -25,7 +25,14 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
         spring.json.type.mapping: orderConfirmation:com.sekhar.ecommerce.kafka.OrderConfirmation
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info   # expose only health & info (or use "*" for all)
+  endpoint:
+    health:
+      show-details: always     # show DB, disk, etc. details
 
 server:
   port: 8070
