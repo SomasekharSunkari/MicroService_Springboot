@@ -13,18 +13,19 @@ spring:
       ddl-auto: update
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true      
+    show-sql: true
     properties:
       hibernate:
-        format_sql: true 
+        format_sql: true
 
   kafka:
+    bootstrap-servers: b-3.priductapicluster.jbxukd.c4.kafka.eu-north-1.amazonaws.com:9092,b-1.priductapicluster.jbxukd.c4.kafka.eu-north-1.amazonaws.com:9092,b-2.priductapicluster.jbxukd.c4.kafka.eu-north-1.amazonaws.com:9092
     producer:
-      bootstrap-servers: b-3.priductapicluster.jbxukd.c4.kafka.eu-north-1.amazonaws.com:9092,b-1.priductapicluster.jbxukd.c4.kafka.eu-north-1.amazonaws.com:9092,b-2.priductapicluster.jbxukd.c4.kafka.eu-north-1.amazonaws.com:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
         spring.json.type.mapping: orderConfirmation:com.sekhar.ecommerce.kafka.OrderConfirmation
+
 
 server:
   port: 8070
