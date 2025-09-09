@@ -28,7 +28,7 @@ phases:
       - echo "Pushing Docker image to ECR"
       - docker push $REPO_URI:$IMAGE_TAG
       - echo "Creating image definitions file for CodePipeline"
-      - printf '[{"name":"payment-service","imageUri":"%s"}]' $REPO_URI:$IMAGE_TAG > ../imagedefinitions.json
+      - printf '[{"name":"notification-service","imageUri":"%s"}]' $REPO_URI:$IMAGE_TAG > ../imagedefinitions.json
       - echo "Printing imagedefinitions.json"
       - cat ../imagedefinitions.json
       - cd ..

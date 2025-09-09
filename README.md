@@ -13,3 +13,9 @@ input demo Value :
 "zipCode": "50003"
 }
 }
+
+// Create ECR repos for Microsevices
+//Codestar connection 
+// Code build project for each microservice
+// ECS task defintion and Service
+// code pipline for each microserice (Referncing Code build from step three and ECS service from step 4 )
