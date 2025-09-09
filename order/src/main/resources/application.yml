@@ -32,6 +32,6 @@ server:
 
 application:
   config:
-    customer-url: http://localhost:8222/api/v1/auth/users
+    customer-url: http://authservice.product-ms.local/api/v1/auth/users
     payment-url: http://localhost:8040/api/v1/payments
     product-url: http://localhost:8050/api/v1/products
