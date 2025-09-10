@@ -45,7 +45,7 @@ const Checkout = ({ cartItems, onComplete }) => {
         }
       };
 
-      const response = await fetch('http://localhost:8222/api/v1/payments', {
+      const response = await fetch('http://public-ms-balancer-968609518.eu-north-1.elb.amazonaws.com/api/v1/payments', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
