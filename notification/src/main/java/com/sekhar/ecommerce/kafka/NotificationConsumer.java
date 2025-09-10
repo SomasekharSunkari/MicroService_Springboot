@@ -10,10 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
-import static com.sekhar.ecommerce.notification.NotificationType.ORDER_CONFIRMATION;
-import static com.sekhar.ecommerce.notification.NotificationType.PAYMENT_CONFIRMATION;
 import static java.lang.String.format;
 
 @Service
@@ -24,7 +20,7 @@ public class NotificationConsumer {
     private final EmailService emailService;
 
 
-    @KafkaListener(topics = "payment-topic" , groupId = "paymentGroup")
+    @KafkaListener(topics = "payment-topic" , groupId = "paymentGroup",concurrency = "3")
     public void consumePaymentSuccessNotification(PaymentConfirmation paymentConfirmation) throws MessagingException {
         try {
             log.info(format("Consuming the message from payment-topic Topic:: %s", paymentConfirmation));
@@ -40,11 +36,13 @@ public class NotificationConsumer {
         }
     }
 
-    @KafkaListener(topics = "order-topic" ,groupId = "orderGroup")
+    @KafkaListener(topics = "order-topic" ,groupId = "orderGroup",concurrency = "3")
     public void consumeOrderConfirmationNotifications(OrderConfirmation orderConfirmation) throws MessagingException {
         try {
             log.info(format("Consuming the message from order-topic Topic:: %s", orderConfirmation));
-            var customerName = orderConfirmation.customer().firstname() + " " + orderConfirmation.customer().lastname();
+
+            var customerName = orderConfirmation.customer().firstname() + " sekhar " + orderConfirmation.customer().lastname();
+            System.out.println(customerName +" ->>>>>>>>>> Customer Name");
             emailService.sendOrderConfirmationEmail(
                     orderConfirmation.customer().email(),
                     customerName,

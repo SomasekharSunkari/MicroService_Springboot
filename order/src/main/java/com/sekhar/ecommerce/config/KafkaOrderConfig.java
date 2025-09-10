@@ -12,7 +12,8 @@ public class KafkaOrderConfig {
     @Bean
     public NewTopic orderTopic() {
 
-        return  TopicBuilder.name("order-topic").build();
+        return  TopicBuilder.name("order-topic").partitions(3).replicas(2)
+                .build();
 
     }
 }

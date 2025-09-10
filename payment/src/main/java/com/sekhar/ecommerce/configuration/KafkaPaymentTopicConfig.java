@@ -12,7 +12,7 @@ public class KafkaPaymentTopicConfig {
     public NewTopic paymentTopic() {
         return TopicBuilder
 
-                .name("payment-topic")
+                .name("payment-topic").partitions(3).replicas(2)
                 .build();
     }
 }
