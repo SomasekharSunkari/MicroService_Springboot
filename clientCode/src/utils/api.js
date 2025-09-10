@@ -1,4 +1,4 @@
-export const API_BASE = 'http://localhost:8222';
+export const API_BASE = 'http://internal-Microservices-Internal-83094094.eu-north-1.elb.amazonaws.com';
 
 export async function apiFetch(path, { method = 'GET', headers = {}, body } = {}) {
   const token = localStorage.getItem('jwt_token');
