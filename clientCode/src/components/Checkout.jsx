@@ -34,36 +34,52 @@ const Checkout = ({ cartItems, onComplete }) => {
     setError('');
 
     try {
-      const paymentData = {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        alert('Please sign in first.');
+        setLoading(false);
+        return;
+      }
+
+      // Step 1: Create order
+      const orderRequest = {
         amount: total,
         paymentMethod: 'CREDIT_CARD',
+        customerId: formData.email, // Or actual customer id if available
+        products: cartItems.map(i => ({ productId: i.id, quantity: i.quantity }))
+      };
+
+      const createdOrderId = await apiFetch('/api/v1/orders/order', { 
+        method: 'POST', 
+        body: orderRequest 
+      });
+
+      // Step 2: Fetch order details to get reference
+      const orderDetails = await apiFetch(`/api/v1/orders/${createdOrderId}`);
+
+      // Step 3: Process payment
+      const paymentRequest = {
+        id: null,
+        amount: orderDetails.amount,
+        paymentMethod: orderDetails.paymentMethod,
+        orderId: orderDetails.id,
+        orderReference: orderDetails.reference,
         customer: {
-          id: "1",
           firstname: formData.firstName,
           lastname: formData.lastName,
           email: formData.email
         }
       };
 
-      const response = await fetch('http://public-ms-balancer-968609518.eu-north-1.elb.amazonaws.com/api/v1/payments/pay', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`
-        },
-        body: JSON.stringify(paymentData)
+      await apiFetch('/api/v1/payments/pay', { 
+        method: 'POST', 
+        body: paymentRequest 
       });
 
-      if (!response.ok) {
-        throw new Error('Payment failed');
-      }
-
-      const paymentResponse = await response.json();
-      
-      // Call onComplete and navigate to confirmation
-      onComplete(paymentResponse.orderReference);
+      // Step 4: Navigate to confirmation page
+      onComplete(orderDetails.reference);
       navigate('/order-confirmation', { 
-        state: { orderReference: paymentResponse.orderReference }
+        state: { orderReference: orderDetails.reference }
       });
 
     } catch (err) {
