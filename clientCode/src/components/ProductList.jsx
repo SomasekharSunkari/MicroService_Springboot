@@ -11,7 +11,7 @@ const ProductList = ({ addToCart }) => {
   useEffect(() => {
     (async () => {
       try {
-        const data = await apiFetch('/api/v1/products');
+        const data = await apiFetch('/api/v1/products/list');
         setProducts(data || []);
       } catch (e) {
         setError(e.message || 'Failed to load products');
