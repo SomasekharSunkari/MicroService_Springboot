@@ -26,7 +26,7 @@ public class ProductController {
     public ResponseEntity<ProductResponse> findById(@PathVariable("product-id") Integer productId){
         return ResponseEntity.ok(service.findById(productId));
     }
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<List<ProductResponse>> findAll(){
         return  ResponseEntity.ok(service.findAll());
     }
