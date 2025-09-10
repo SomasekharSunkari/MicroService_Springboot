@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
     private final PaymentService paymentService;
 
-    @PostMapping
+    @PostMapping("/pay")
     public ResponseEntity<Integer> createPayment(@RequestBody @Valid PaymentRequest paymentRequest, @RequestHeader(value = "loggedInUser",required = false) String loggedInUser) {
         System.out.println("LoggedIn User from Gateway: "+ loggedInUser);
         return  ResponseEntity.ok(paymentService.createPayment(paymentRequest));

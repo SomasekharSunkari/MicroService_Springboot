@@ -17,7 +17,7 @@ public class OrderController {
     private final OrderService orderService;
     private final JwtService jwtService;
 
-    @PostMapping
+    @PostMapping("/order")
     public ResponseEntity<Integer> createOrder(@RequestBody @Valid OrderRequest request,@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
 
@@ -31,7 +31,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(request));
     }
 
-    @GetMapping
+    @GetMapping("/list-orders")
     public ResponseEntity<List<OrderResponse>> findAll(){
         return ResponseEntity.ok(orderService.findAllOrders());
     }

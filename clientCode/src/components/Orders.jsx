@@ -12,7 +12,7 @@ const Orders = () => {
   useEffect(() => {
     (async () => {
       try {
-        const data = await apiFetch('/api/v1/orders');
+        const data = await apiFetch('/api/v1/orders/list-orders');
         
         // Take only first 10 orders and map to simplified objects
         const simplifiedOrders = Array.isArray(data) 
