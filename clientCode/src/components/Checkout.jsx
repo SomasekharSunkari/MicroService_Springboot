@@ -76,9 +76,9 @@ const Checkout = ({ cartItems, onComplete }) => {
         body: paymentRequest 
       });
 
-      // Step 4: Navigate to confirmation page
+      // Step 4: Navigate to success page
       onComplete(orderDetails.reference);
-      navigate('/order-confirmation', { 
+      navigate('/order-success', { 
         state: { orderReference: orderDetails.reference }
       });
 
