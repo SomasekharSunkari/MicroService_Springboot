@@ -7,7 +7,6 @@ import AddProduct from './components/AddProduct';
 import Orders from './components/Orders';
 import Checkout from './components/Checkout';
 import OrderConfirmation from './components/OrderConfirmation';
-import OrderSuccess from './components/OrderSuccess';
 import './App.css';
 
 function App() {
@@ -108,7 +107,6 @@ function App() {
               }
             />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
-            <Route path="/order-success" element={<OrderSuccess />} />
           </Routes>
           
           {showAddProduct && (
