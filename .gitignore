@@ -9,3 +9,4 @@ product/mvnw.*
 *.tfstate
 *.backup
 *.example
+terraform.tfstate.backup

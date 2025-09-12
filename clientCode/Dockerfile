@@ -1,11 +1,21 @@
-FROM node:20-alpine AS build
+# ---------- STAGE 1: Build ----------
+FROM public.ecr.aws/docker/library/node:20-alpine AS build
 WORKDIR /app
+
+# Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
+
+# Copy source code and build
 COPY . .
 RUN npm run build
 
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+# ---------- STAGE 2: Run ----------
+FROM public.ecr.aws/docker/library/nginx:alpine
+WORKDIR /usr/share/nginx/html
+
+# Copy build artifacts from builder
+COPY --from=build /app/dist .
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

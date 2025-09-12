@@ -186,6 +186,19 @@ resource "aws_iam_role_policy" "codebuild" {
         "codeconnections:UseConnection"
       ]
       Resource = "*"
+    },
+    {
+      Effect = "Allow"
+      Action = [
+        "codebuild:CreateReportGroup",
+        "codebuild:CreateReport",
+        "codebuild:UpdateReport",
+        "codebuild:BatchPutTestCases",
+        "codebuild:BatchPutCodeCoverages"
+      ]
+      Resource = [
+        "arn:aws:codebuild:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:report-group/${var.project_name}-*"
+      ]
     }
     ]
   })
