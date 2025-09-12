@@ -5,3 +5,7 @@ order/mvnw.*
 product/mvnw.*
 
 *.zip
+.terr*
+*.tfstate
+*.backup
+*.example
