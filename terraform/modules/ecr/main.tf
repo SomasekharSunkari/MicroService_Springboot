@@ -16,6 +16,7 @@ resource "aws_ecr_repository" "services" {
   encryption_configuration {
     encryption_type = "AES256"
   }
+  force_delete = true
 
   tags = merge(var.common_tags, {
     Name        = "${var.project_name}-${each.key}"

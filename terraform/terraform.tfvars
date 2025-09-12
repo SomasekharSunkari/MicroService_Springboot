@@ -86,7 +86,7 @@ services = {
   }
   auth = {
     name            = "auth-service"
-    port            = 8080
+    port            = 8787
     cpu             = 1024
     memory          = 3072
     buildspec_path  = "authservice/buildspec.yml"
@@ -112,7 +112,7 @@ services = {
   }
   notification = {
     name            = "notification-service"
-    port            = 8050
+    port            = 8040
     cpu             = 1024
     memory          = 3072
     buildspec_path  = "notification/buildspec.yml"
@@ -152,7 +152,7 @@ services = {
   }
   product = {
     name            = "product-api"
-    port            = 8090
+    port            = 8050
     cpu             = 1024
     memory          = 3072
     buildspec_path  = "product/buildspec.yml"
