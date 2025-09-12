@@ -79,7 +79,7 @@ services = {
     buildspec_path  = "payment/buildspec.yml"
     dockerfile_path = "payment/Dockerfile"
     health_check_path = "/actuator/health"
-    file_path_triggers = ["payment/.*"]
+    file_path_triggers = ["payment/**"]
     environment_variables = {
       SPRING_PROFILES_ACTIVE = "prod"
     }
@@ -92,7 +92,7 @@ services = {
     buildspec_path  = "authservice/buildspec.yml"
     dockerfile_path = "authservice/Dockerfile"
     health_check_path = "/actuator/health"
-    file_path_triggers = ["authservice/.*"]
+    file_path_triggers = ["authservice/**"]
     environment_variables = {
       SPRING_PROFILES_ACTIVE = "prod"
     }
@@ -105,7 +105,7 @@ services = {
     buildspec_path  = "order/buildspec.yml"
     dockerfile_path = "order/Dockerfile"
     health_check_path = "/actuator/health"
-    file_path_triggers = ["order/.*"]
+    file_path_triggers = ["order/**"]
     environment_variables = {
       SPRING_PROFILES_ACTIVE = "prod"
     }
@@ -118,7 +118,7 @@ services = {
     buildspec_path  = "notification/buildspec.yml"
     dockerfile_path = "notification/Dockerfile"
     health_check_path = "/actuator/health"
-    file_path_triggers = ["notification/.*"]
+    file_path_triggers = ["notification/**"]
     environment_variables = {
       SPRING_PROFILES_ACTIVE = "prod"
     }
@@ -132,7 +132,7 @@ services = {
     dockerfile_path = "clientCode/Dockerfile"
     health_check_path = "/"
     public_facing   = true
-    file_path_triggers = ["clientCode/.*"]
+    file_path_triggers = ["clientCode/**"]
     environment_variables = {
       NODE_ENV = "production"
     }
@@ -145,7 +145,7 @@ services = {
     buildspec_path  = "configserver/buildspec.yml"
     dockerfile_path = "configserver/Dockerfile"
     health_check_path = "/actuator/health"
-    file_path_triggers = ["configserver/.*"]
+    file_path_triggers = ["configserver/**"]
     environment_variables = {
       SPRING_PROFILES_ACTIVE = "prod"
     }
@@ -158,7 +158,7 @@ services = {
     buildspec_path  = "product/buildspec.yml"
     dockerfile_path = "product/Dockerfile"
     health_check_path = "/actuator/health"
-    file_path_triggers = ["product/.*"]
+    file_path_triggers = ["product/**"]
     environment_variables = {
       SPRING_PROFILES_ACTIVE = "prod"
     }
@@ -188,9 +188,9 @@ ecr_repositories = {
   product = {
     name = "product-api"
   }
-  stackular = {
-    name = "stackular/images"
-  }
+  # stackular = {
+  #   name = "stackular/images"
+  # }
 }
 
 # Load Balancer Configuration

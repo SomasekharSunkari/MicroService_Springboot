@@ -250,14 +250,14 @@ resource "aws_lb_listener" "main" {
   tags = var.common_tags
 }
 
-# ALB Listener Rules for each service
+# ALB Listener Rules for each service with exact path patterns
 resource "aws_lb_listener_rule" "services" {
   for_each = {
     for k, v in aws_lb_target_group.services : k => v if k != "client"
   }
 
   listener_arn = aws_lb_listener.main.arn
-  priority     = 100 + index(keys({ for k, v in aws_lb_target_group.services : k => v if k != "client" }), each.key)
+  priority     = each.key == "auth" ? 1 : each.key == "order" ? 2 : each.key == "product" ? 3 : each.key == "payment" ? 5 : 100 + index(keys({ for k, v in aws_lb_target_group.services : k => v if k != "client" }), each.key)
 
   action {
     type             = "forward"
@@ -266,7 +266,13 @@ resource "aws_lb_listener_rule" "services" {
 
   condition {
     path_pattern {
-      values = ["/${each.key}*"]
+      values = [
+        each.key == "auth" ? "/api/v1/auth/*" :
+        each.key == "order" ? "/api/v1/orders/*" :
+        each.key == "product" ? "/api/v1/products/*" :
+        each.key == "payment" ? "/api/v1/payments/*" :
+        "/${each.key}*"
+      ]
     }
   }
 

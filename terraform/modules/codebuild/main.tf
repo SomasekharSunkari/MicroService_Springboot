@@ -21,10 +21,10 @@ resource "aws_codebuild_project" "services" {
 
   environment {
     compute_type                = "BUILD_GENERAL1_MEDIUM"
-    image                      = "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
-    type                       = "LINUX_CONTAINER"
+    image                      = "aws/codebuild/ami/amazonlinux-x86_64-base:latest"
+    type                       = "LINUX_EC2"
     image_pull_credentials_type = "CODEBUILD"
-    privileged_mode            = true
+    privileged_mode            = false
 
     environment_variable {
       name  = "AWS_DEFAULT_REGION"
