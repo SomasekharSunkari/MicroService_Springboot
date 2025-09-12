@@ -1,0 +1,176 @@
+# Project Configuration
+project_name = "microservices-ecommerce"
+environment  = "production"
+aws_region   = "eu-north-1"
+
+# Common Tags
+common_tags = {
+  Environment = "production"
+  Project     = "microservices-ecommerce"
+  ManagedBy   = "terraform"
+  Owner       = "your-team"
+  CostCenter  = "engineering"
+}
+
+# VPC Configuration
+vpc_cidr = "10.0.0.0/16"
+
+# Subnet Configuration (3 AZs)
+availability_zones = ["eu-north-1a", "eu-north-1b", "eu-north-1c"]
+
+private_subnet_cidrs = [
+  "10.0.1.0/24",   # Private subnet 1
+  "10.0.2.0/24",   # Private subnet 2 
+  "10.0.3.0/24"    # Private subnet 3
+]
+
+public_subnet_cidrs = [
+  "10.0.101.0/24", # Public subnet 1
+  "10.0.102.0/24", # Public subnet 2
+  "10.0.103.0/24"  # Public subnet 3
+]
+
+# GitHub Configuration
+github_repository_url     = "https://github.com/SomasekharSunkari/MicroService_Springboot.git"
+github_repository_full_id = "SomasekharSunkari/MicroService_Springboot"
+github_branch            = "main"
+
+# Load Balancer Configuration
+load_balancer_config = {
+  name                       = "microservices-alb"
+  internal                   = false
+  load_balancer_type        = "application"
+  enable_deletion_protection = false
+}
+
+# Service Configuration (customize as needed)
+services = {
+  payment = {
+    name            = "payment-service"
+    port            = 8060
+    cpu             = 1024
+    memory          = 3072
+    buildspec_path  = "payment/buildspec.yml"
+    dockerfile_path = "payment/Dockerfile"
+    health_check_path = "/actuator/health"
+    public_facing   = false
+    environment_variables = {
+      SPRING_PROFILES_ACTIVE = "production"
+      JAVA_OPTS = "-Xmx2048m"
+    }
+    file_path_triggers = ["payment/**"]
+  }
+  
+  auth = {
+    name            = "auth-service"
+    port            = 8080
+    cpu             = 1024
+    memory          = 3072
+    buildspec_path  = "authservice/buildspec.yml"
+    dockerfile_path = "authservice/Dockerfile"
+    health_check_path = "/actuator/health"
+    public_facing   = false
+    environment_variables = {
+      SPRING_PROFILES_ACTIVE = "production"
+    }
+    file_path_triggers = ["authservice/**"]
+  }
+  
+  order = {
+    name            = "order-service"
+    port            = 8070
+    cpu             = 1024
+    memory          = 3072
+    buildspec_path  = "order/buildspec.yml"
+    dockerfile_path = "order/Dockerfile"
+    health_check_path = "/actuator/health"
+    public_facing   = false
+    file_path_triggers = ["order/**"]
+  }
+  
+  notification = {
+    name            = "notification-service"
+    port            = 8050
+    cpu             = 1024
+    memory          = 3072
+    buildspec_path  = "notification/buildspec.yml"
+    dockerfile_path = "notification/Dockerfile"
+    health_check_path = "/actuator/health"
+    public_facing   = false
+    file_path_triggers = ["notification/**"]
+  }
+  
+  client = {
+    name            = "client-service"
+    port            = 80
+    cpu             = 1024
+    memory          = 3072
+    buildspec_path  = "clientCode/buildspec.yml"
+    dockerfile_path = "clientCode/Dockerfile"
+    health_check_path = "/"
+    public_facing   = true  # This service faces the internet
+    file_path_triggers = ["clientCode/**"]
+  }
+  
+  config = {
+    name            = "config-server"
+    port            = 8888
+    cpu             = 512    # Smaller resources for config server
+    memory          = 1024
+    buildspec_path  = "configserver/buildspec.yml"
+    dockerfile_path = "configserver/Dockerfile"
+    health_check_path = "/actuator/health"
+    public_facing   = false
+    file_path_triggers = ["configserver/**"]
+  }
+  
+  product = {
+    name            = "product-api"
+    port            = 8090
+    cpu             = 1024
+    memory          = 3072
+    buildspec_path  = "product/buildspec.yml"
+    dockerfile_path = "product/Dockerfile"
+    health_check_path = "/actuator/health"
+    public_facing   = false
+    file_path_triggers = ["product/**"]
+  }
+}
+
+# ECR Repository Configuration
+ecr_repositories = {
+  payment = {
+    name                 = "payment-service"
+    image_tag_mutability = "MUTABLE"
+    scan_on_push        = false
+    lifecycle_policy = {
+      keep_last_images = 10
+    }
+  }
+  auth = {
+    name = "auth-service"
+  }
+  order = {
+    name = "order-service"
+  }
+  notification = {
+    name = "notification-service"
+  }
+  client = {
+    name = "client-service"
+  }
+  config = {
+    name = "config-server"
+  }
+  product = {
+    name = "product-api"
+  }
+  stackular = {
+    name                 = "stackular/images"
+    image_tag_mutability = "MUTABLE"
+    scan_on_push        = false
+    lifecycle_policy = {
+      keep_last_images = 5  # Keep fewer images for this repo
+    }
+  }
+}

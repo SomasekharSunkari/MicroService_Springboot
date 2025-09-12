@@ -1,0 +1,9 @@
+{
+  "amount": 900,
+  "paymentMethod": "PAYPAL",
+  "products": [
+    { "productId": 201, "quantity": 1 },
+    { "productId": 451, "quantity": 1 }
+  ]
+}
+

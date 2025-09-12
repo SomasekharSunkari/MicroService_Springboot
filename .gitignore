@@ -3,3 +3,5 @@ customer/mvnw.*
 discovery/mvnw.*
 order/mvnw.*
 product/mvnw.*
+
+*.zip
