@@ -1,4 +1,4 @@
-export const API_BASE = 'http://public-ms-balancer-968609518.eu-north-1.elb.amazonaws.com';
+export const API_BASE = 'http://public-ms-balancer-992743410.us-east-1.elb.amazonaws.com/';
 
 export async function apiFetch(path, { method = 'GET', headers = {}, body } = {}) {
   const token = localStorage.getItem('jwt_token');
