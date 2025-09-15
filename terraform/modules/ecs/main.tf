@@ -204,3 +204,226 @@ resource "aws_ecs_service" "services" {
     ignore_changes = [desired_count]
   }
 }
+
+# ================================================================
+# ECS AUTO SCALING CONFIGURATION
+# ================================================================
+
+# Application Auto Scaling Target
+resource "aws_appautoscaling_target" "ecs_services" {
+  for_each = var.services
+
+  max_capacity       = var.autoscaling_config.max_capacity
+  min_capacity       = var.autoscaling_config.min_capacity
+  resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.services[each.key].name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+
+  depends_on = [aws_ecs_service.services]
+
+  tags = merge(var.common_tags, {
+    Name        = "${var.project_name}-${each.key}-autoscaling-target"
+    Service     = each.key
+    Environment = var.environment
+  })
+}
+
+# Auto Scaling Policy - Scale Up on CPU
+resource "aws_appautoscaling_policy" "scale_up_cpu" {
+  for_each = var.services
+
+  name               = "${var.project_name}-${each.key}-scale-up-cpu"
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.ecs_services[each.key].resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_services[each.key].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_services[each.key].service_namespace
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown               = var.autoscaling_config.scale_up_cooldown
+    metric_aggregation_type = "Average"
+
+    step_adjustment {
+      metric_interval_lower_bound = 0
+      scaling_adjustment          = var.autoscaling_config.scale_up_adjustment
+    }
+  }
+}
+
+# Auto Scaling Policy - Scale Down on CPU
+resource "aws_appautoscaling_policy" "scale_down_cpu" {
+  for_each = var.services
+
+  name               = "${var.project_name}-${each.key}-scale-down-cpu"
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.ecs_services[each.key].resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_services[each.key].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_services[each.key].service_namespace
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown               = var.autoscaling_config.scale_down_cooldown
+    metric_aggregation_type = "Average"
+
+    step_adjustment {
+      metric_interval_upper_bound = 0
+      scaling_adjustment          = var.autoscaling_config.scale_down_adjustment
+    }
+  }
+}
+
+# Auto Scaling Policy - Scale Up on Memory
+resource "aws_appautoscaling_policy" "scale_up_memory" {
+  for_each = var.services
+
+  name               = "${var.project_name}-${each.key}-scale-up-memory"
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.ecs_services[each.key].resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_services[each.key].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_services[each.key].service_namespace
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown               = var.autoscaling_config.scale_up_cooldown
+    metric_aggregation_type = "Average"
+
+    step_adjustment {
+      metric_interval_lower_bound = 0
+      scaling_adjustment          = var.autoscaling_config.scale_up_adjustment
+    }
+  }
+}
+
+# Auto Scaling Policy - Scale Down on Memory
+resource "aws_appautoscaling_policy" "scale_down_memory" {
+  for_each = var.services
+
+  name               = "${var.project_name}-${each.key}-scale-down-memory"
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.ecs_services[each.key].resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_services[each.key].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_services[each.key].service_namespace
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown               = var.autoscaling_config.scale_down_cooldown
+    metric_aggregation_type = "Average"
+
+    step_adjustment {
+      metric_interval_upper_bound = 0
+      scaling_adjustment          = var.autoscaling_config.scale_down_adjustment
+    }
+  }
+}
+
+# ================================================================
+# CLOUDWATCH ALARMS FOR AUTO SCALING
+# ================================================================
+
+# CPU High Alarm
+resource "aws_cloudwatch_metric_alarm" "cpu_high" {
+  for_each = var.services
+
+  alarm_name          = "${var.project_name}-${each.key}-cpu-high"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = var.autoscaling_config.cpu_high_evaluation_periods
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = var.autoscaling_config.cpu_high_period
+  statistic           = "Average"
+  threshold           = var.autoscaling_config.cpu_high_threshold
+  alarm_description   = "This metric monitors ECS CPU utilization for ${each.key} service"
+  alarm_actions       = [aws_appautoscaling_policy.scale_up_cpu[each.key].arn]
+
+  dimensions = {
+    ServiceName = aws_ecs_service.services[each.key].name
+    ClusterName = aws_ecs_cluster.main.name
+  }
+
+  tags = merge(var.common_tags, {
+    Name        = "${var.project_name}-${each.key}-cpu-high-alarm"
+    Service     = each.key
+    Environment = var.environment
+  })
+}
+
+# CPU Low Alarm
+resource "aws_cloudwatch_metric_alarm" "cpu_low" {
+  for_each = var.services
+
+  alarm_name          = "${var.project_name}-${each.key}-cpu-low"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = var.autoscaling_config.cpu_low_evaluation_periods
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = var.autoscaling_config.cpu_low_period
+  statistic           = "Average"
+  threshold           = var.autoscaling_config.cpu_low_threshold
+  alarm_description   = "This metric monitors ECS CPU utilization for ${each.key} service"
+  alarm_actions       = [aws_appautoscaling_policy.scale_down_cpu[each.key].arn]
+
+  dimensions = {
+    ServiceName = aws_ecs_service.services[each.key].name
+    ClusterName = aws_ecs_cluster.main.name
+  }
+
+  tags = merge(var.common_tags, {
+    Name        = "${var.project_name}-${each.key}-cpu-low-alarm"
+    Service     = each.key
+    Environment = var.environment
+  })
+}
+
+# Memory High Alarm
+resource "aws_cloudwatch_metric_alarm" "memory_high" {
+  for_each = var.services
+
+  alarm_name          = "${var.project_name}-${each.key}-memory-high"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = var.autoscaling_config.memory_high_evaluation_periods
+  metric_name         = "MemoryUtilization"
+  namespace           = "AWS/ECS"
+  period              = var.autoscaling_config.memory_high_period
+  statistic           = "Average"
+  threshold           = var.autoscaling_config.memory_high_threshold
+  alarm_description   = "This metric monitors ECS Memory utilization for ${each.key} service"
+  alarm_actions       = [aws_appautoscaling_policy.scale_up_memory[each.key].arn]
+
+  dimensions = {
+    ServiceName = aws_ecs_service.services[each.key].name
+    ClusterName = aws_ecs_cluster.main.name
+  }
+
+  tags = merge(var.common_tags, {
+    Name        = "${var.project_name}-${each.key}-memory-high-alarm"
+    Service     = each.key
+    Environment = var.environment
+  })
+}
+
+# Memory Low Alarm
+resource "aws_cloudwatch_metric_alarm" "memory_low" {
+  for_each = var.services
+
+  alarm_name          = "${var.project_name}-${each.key}-memory-low"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = var.autoscaling_config.memory_low_evaluation_periods
+  metric_name         = "MemoryUtilization"
+  namespace           = "AWS/ECS"
+  period              = var.autoscaling_config.memory_low_period
+  statistic           = "Average"
+  threshold           = var.autoscaling_config.memory_low_threshold
+  alarm_description   = "This metric monitors ECS Memory utilization for ${each.key} service"
+  alarm_actions       = [aws_appautoscaling_policy.scale_down_memory[each.key].arn]
+
+  dimensions = {
+    ServiceName = aws_ecs_service.services[each.key].name
+    ClusterName = aws_ecs_cluster.main.name
+  }
+
+  tags = merge(var.common_tags, {
+    Name        = "${var.project_name}-${each.key}-memory-low-alarm"
+    Service     = each.key
+    Environment = var.environment
+  })
+}

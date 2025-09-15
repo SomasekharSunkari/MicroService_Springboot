@@ -1,4 +1,4 @@
-package com.sekhar.ecommerce.handler;
+package com.sekhar.authservice.exceptions;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -11,4 +11,3 @@ public record ErrorResponse(
         Map<String, String> validationErrors
 ) {
 }
-

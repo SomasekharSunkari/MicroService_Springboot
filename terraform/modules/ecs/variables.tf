@@ -77,3 +77,48 @@ variable "common_tags" {
   type        = map(string)
   default     = {}
 }
+
+# Auto Scaling Configuration
+variable "autoscaling_config" {
+  description = "Auto scaling configuration for ECS services"
+  type = object({
+    min_capacity                     = optional(number, 1)
+    max_capacity                     = optional(number, 10)
+    scale_up_adjustment              = optional(number, 1)
+    scale_down_adjustment            = optional(number, -1)
+    scale_up_cooldown               = optional(number, 300)
+    scale_down_cooldown             = optional(number, 300)
+    cpu_high_threshold              = optional(number, 70)
+    cpu_low_threshold               = optional(number, 30)
+    memory_high_threshold           = optional(number, 70)
+    memory_low_threshold            = optional(number, 30)
+    cpu_high_evaluation_periods     = optional(number, 2)
+    cpu_low_evaluation_periods      = optional(number, 2)
+    memory_high_evaluation_periods  = optional(number, 2)
+    memory_low_evaluation_periods   = optional(number, 2)
+    cpu_high_period                 = optional(number, 300)
+    cpu_low_period                  = optional(number, 300)
+    memory_high_period              = optional(number, 300)
+    memory_low_period               = optional(number, 300)
+  })
+  default = {
+    min_capacity                     = 1
+    max_capacity                     = 10
+    scale_up_adjustment              = 1
+    scale_down_adjustment            = -1
+    scale_up_cooldown               = 300
+    scale_down_cooldown             = 300
+    cpu_high_threshold              = 70
+    cpu_low_threshold               = 30
+    memory_high_threshold           = 70
+    memory_low_threshold            = 30
+    cpu_high_evaluation_periods     = 2
+    cpu_low_evaluation_periods      = 2
+    memory_high_evaluation_periods  = 2
+    memory_low_evaluation_periods   = 2
+    cpu_high_period                 = 300
+    cpu_low_period                  = 300
+    memory_high_period              = 300
+    memory_low_period               = 300
+  }
+}

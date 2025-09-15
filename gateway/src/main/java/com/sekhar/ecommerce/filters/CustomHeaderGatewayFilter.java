@@ -1,5 +1,7 @@
 package com.sekhar.ecommerce.filters;
 
+import com.sekhar.ecommerce.exceptions.AuthorizationHeaderMissingException;
+import com.sekhar.ecommerce.exceptions.InvalidTokenException;
 import com.sekhar.ecommerce.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -26,7 +28,7 @@ public class CustomHeaderGatewayFilter extends AbstractGatewayFilterFactory<Cust
 
             if(validator.isSecured.test(exchange.getRequest())){
                 if(!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)){
-                    throw  new RuntimeException("Missing Authorization header");
+                    throw new AuthorizationHeaderMissingException("Authorization header is missing");
                 }
 
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
@@ -40,7 +42,7 @@ public class CustomHeaderGatewayFilter extends AbstractGatewayFilterFactory<Cust
                 }
                 catch (Exception e){
                     System.out.println("Invalid Access...!");
-                    throw new RuntimeException("An authorized access to application");
+                    throw new InvalidTokenException("Invalid or expired JWT token");
                 }
             }
             return  chain.filter(exchange.mutate().request(mutatedRequest).build());

@@ -1,5 +1,6 @@
 package com.sekhar.ecommerce.email;
 
+import com.sekhar.ecommerce.exceptions.EmailSendingException;
 import com.sekhar.ecommerce.kafka.order.Product;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -57,7 +58,8 @@ public class EmailService {
             mailSender.send(mimeMessage);
             log.info(String.format("INFO - Email successfully sent to %s with template %s ", destinationEmail, templateName));
         } catch (MessagingException e) {
-            log.warn("WARNING - Cannot send Email to {} ", destinationEmail);
+            log.error("Failed to send payment success email to {}: {}", destinationEmail, e.getMessage());
+            throw new EmailSendingException("Failed to send payment success email to " + destinationEmail, e);
         }
     }@Async
     public void sendOrderConfirmationEmail(
@@ -92,7 +94,8 @@ public class EmailService {
             mailSender.send(mimeMessage);
             log.info(String.format("INFO - Email successfully sent to %s with template %s ", destinationEmail, templateName));
         } catch (MessagingException e) {
-            log.warn("WARNING - Cannot send Email to {} ", destinationEmail);
+            log.error("Failed to send order confirmation email to {}: {}", destinationEmail, e.getMessage());
+            throw new EmailSendingException("Failed to send order confirmation email to " + destinationEmail, e);
         }
 
     }

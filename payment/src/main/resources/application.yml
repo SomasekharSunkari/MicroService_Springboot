@@ -21,7 +21,7 @@ spring:
         format_sql: true 
 
   kafka:
-    bootstrap-servers: b-3.priductapicluster.jbxukd.c4.kafka.eu-north-1.amazonaws.com:9092,b-1.priductapicluster.jbxukd.c4.kafka.eu-north-1.amazonaws.com:9092,b-2.priductapicluster.jbxukd.c4.kafka.eu-north-1.amazonaws.com:9092
+    bootstrap-servers: b-2.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092,b-2.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092,b-3.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

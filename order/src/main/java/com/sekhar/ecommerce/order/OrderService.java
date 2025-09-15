@@ -1,6 +1,6 @@
 package com.sekhar.ecommerce.order;
 
-import com.sekhar.ecommerce.exceptions.BussinessException;
+import com.sekhar.ecommerce.exceptions.BusinessException;
 import com.sekhar.ecommerce.kafka.OrderConfirmation;
 import com.sekhar.ecommerce.kafka.OrderProducer;
 import com.sekhar.ecommerce.orderline.OrderLineRequest;
@@ -28,7 +28,7 @@ public class OrderService {
     private final OrderProducer orderProducer;
 
     public Integer createOrder(@Valid OrderRequest request) {
-        var customer = customerClient.findCustomerById(request.getCustomerId()).orElseThrow(()->new BussinessException("Cannot create order:: No customer exists with id "+request.getCustomerId()));
+        var customer = customerClient.findCustomerById(request.getCustomerId()).orElseThrow(()->new BusinessException("Cannot create order:: No customer exists with id "+request.getCustomerId()));
         System.out.println("Customer id before eror");
         var purchasedProducts = this.productClient.purchaseProducts(request.getProducts());
         System.out.println(purchasedProducts);

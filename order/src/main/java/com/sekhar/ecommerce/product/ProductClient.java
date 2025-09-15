@@ -1,7 +1,7 @@
 package com.sekhar.ecommerce.product;
 
 
-import com.sekhar.ecommerce.exceptions.BussinessException;
+import com.sekhar.ecommerce.exceptions.BusinessException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +38,7 @@ public class ProductClient {
         );
 
         if (responseEntity.getStatusCode().isError()) {
-            throw new BussinessException("An error occurred while processing the products purchase: " + responseEntity.getStatusCode());
+            throw new BusinessException("An error occurred while processing the products purchase: " + responseEntity.getStatusCode());
         }
         return  responseEntity.getBody();
     }

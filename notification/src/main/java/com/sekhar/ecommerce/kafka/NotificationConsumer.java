@@ -2,6 +2,7 @@ package com.sekhar.ecommerce.kafka;
 
 
 import com.sekhar.ecommerce.email.EmailService;
+import com.sekhar.ecommerce.exceptions.KafkaConsumerException;
 import com.sekhar.ecommerce.kafka.order.OrderConfirmation;
 import com.sekhar.ecommerce.kafka.payment.PaymentConfirmation;
 import jakarta.mail.MessagingException;
@@ -32,7 +33,8 @@ public class NotificationConsumer {
                 paymentConfirmation.orderReference()
         );
         } catch (Exception e) {
-            log.error("Failed to parse payment message: {}", paymentConfirmation, e);
+            log.error("Failed to process payment message: {}", paymentConfirmation, e);
+            throw new KafkaConsumerException("Failed to process payment confirmation notification", e);
         }
     }
 
@@ -51,7 +53,8 @@ public class NotificationConsumer {
                     orderConfirmation.products()
             );
         } catch (Exception e) {
-            log.error("Failed to parse order message: {}", orderConfirmation, e);
+            log.error("Failed to process order message: {}", orderConfirmation, e);
+            throw new KafkaConsumerException("Failed to process order confirmation notification", e);
         }
     }
 }

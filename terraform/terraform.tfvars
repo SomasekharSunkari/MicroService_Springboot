@@ -200,3 +200,38 @@ load_balancer_config = {
   load_balancer_type        = "application"
   enable_deletion_protection = false
 }
+
+# MSK Configuration
+msk_config = {
+  kafka_version            = "3.8.x"
+  instance_type           = "kafka.m7g.large"
+  broker_count            = 3
+  storage_volume_size     = 1000
+  enable_cloudwatch_logs  = false
+  log_retention_days      = 7
+  enable_jmx_exporter     = false
+  enable_node_exporter    = false
+  client_broker_encryption = "TLS_PLAINTEXT"
+}
+
+# ECS Auto Scaling Configuration
+ecs_autoscaling_config = {
+  min_capacity                     = 1
+  max_capacity                     = 10
+  scale_up_adjustment              = 1
+  scale_down_adjustment            = -1
+  scale_up_cooldown               = 300   # 5 minutes
+  scale_down_cooldown             = 300   # 5 minutes
+  cpu_high_threshold              = 70    # Scale up when CPU > 70%
+  cpu_low_threshold               = 30    # Scale down when CPU < 30%
+  memory_high_threshold           = 70    # Scale up when Memory > 70%
+  memory_low_threshold            = 30    # Scale down when Memory < 30%
+  cpu_high_evaluation_periods     = 2     # 2 consecutive periods
+  cpu_low_evaluation_periods      = 2     # 2 consecutive periods
+  memory_high_evaluation_periods  = 2     # 2 consecutive periods
+  memory_low_evaluation_periods   = 2     # 2 consecutive periods
+  cpu_high_period                 = 300   # 5 minutes
+  cpu_low_period                  = 300   # 5 minutes
+  memory_high_period              = 300   # 5 minutes
+  memory_low_period               = 300   # 5 minutes
+}

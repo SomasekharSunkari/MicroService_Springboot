@@ -29,13 +29,13 @@ public class CustomerService {
     }
 
     private void mergeCustomer(Customer customer, @Valid CustomerRequest request) {
-        if(StringUtils.isBlank(request.firstname())){
+        if(!StringUtils.isBlank(request.firstname())){
             customer.setFirstname(request.firstname());
         }
-        if(StringUtils.isBlank(request.lastname())){
+        if(!StringUtils.isBlank(request.lastname())){
             customer.setLastname(request.lastname());
         }
-        if(StringUtils.isBlank(request.email())){
+        if(!StringUtils.isBlank(request.email())){
             customer.setEmail(request.email());
         }
         if (request.address() != null) {

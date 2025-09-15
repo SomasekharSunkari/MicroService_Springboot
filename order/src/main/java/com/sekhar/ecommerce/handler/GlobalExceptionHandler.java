@@ -1,7 +1,7 @@
 package com.sekhar.ecommerce.handler;
 
 
-import com.sekhar.ecommerce.exceptions.BussinessException;
+import com.sekhar.ecommerce.exceptions.BusinessException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,8 @@ public class GlobalExceptionHandler {
 
     record ApiError(OffsetDateTime timestamp, int status, String error, String message, Map<String,String> details) {}
 
-    @ExceptionHandler(BussinessException.class)
-    public ResponseEntity<ApiError> handleBusiness(BussinessException e){
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ApiError> handleBusiness(BusinessException e){
         return build(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), null);
     }
 

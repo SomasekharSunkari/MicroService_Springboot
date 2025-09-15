@@ -26,7 +26,33 @@ module "network" {
 }
 
 # ================================================================
-# STEP 2: ECR MODULE (After network is created)
+# STEP 2: MSK MODULE (After network is created)
+# ================================================================
+
+module "msk" {
+  source = "./modules/msk"
+
+  project_name           = var.project_name
+  environment           = var.environment
+  vpc_id                = module.network.vpc_id
+  vpc_cidr              = module.network.vpc_cidr
+  private_subnet_ids    = module.network.private_subnet_ids
+  kafka_version         = var.msk_config.kafka_version
+  instance_type         = var.msk_config.instance_type
+  broker_count          = var.msk_config.broker_count
+  storage_volume_size   = var.msk_config.storage_volume_size
+  enable_cloudwatch_logs = var.msk_config.enable_cloudwatch_logs
+  log_retention_days    = var.msk_config.log_retention_days
+  enable_jmx_exporter   = var.msk_config.enable_jmx_exporter
+  enable_node_exporter  = var.msk_config.enable_node_exporter
+  client_broker_encryption = var.msk_config.client_broker_encryption
+  common_tags           = var.common_tags
+
+  depends_on = [module.network]
+}
+
+# ================================================================
+# STEP 3: ECR MODULE (After network is created)
 # ================================================================
 
 module "ecr" {
@@ -41,7 +67,7 @@ module "ecr" {
 }
 
 # ================================================================
-# STEP 3: CODEBUILD MODULE (After ECR repositories are created)
+# STEP 4: CODEBUILD MODULE (After ECR repositories are created)
 # ================================================================
 
 module "codebuild" {
@@ -61,11 +87,11 @@ module "codebuild" {
   aws_account_id          = var.aws_account_id
   common_tags             = var.common_tags
 
-  depends_on = [module.ecr, aws_iam_role.codebuild]
+  depends_on = [module.network, module.msk, module.ecr, aws_iam_role.codebuild]
 }
 
 # ================================================================
-# STEP 4: ECS MODULE (After network and ECR are ready)
+# STEP 5: ECS MODULE (After network and ECR are ready)
 # ================================================================
 
 module "ecs" {
@@ -84,13 +110,14 @@ module "ecs" {
   ecs_task_execution_role_arn = aws_iam_role.ecs_task_execution.arn
   ecs_task_role_arn          = aws_iam_role.ecs_task.arn
   aws_region                 = var.aws_region
+  autoscaling_config         = var.ecs_autoscaling_config
   common_tags                = var.common_tags
 
-  depends_on = [module.network, module.ecr, aws_iam_role.ecs_task_execution, aws_iam_role.ecs_task]
+  depends_on = [module.network, module.msk, module.ecr, aws_iam_role.ecs_task_execution, aws_iam_role.ecs_task]
 }
 
 # ================================================================
-# STEP 5: CODEPIPELINE MODULE (After all previous modules are ready)
+# STEP 6: CODEPIPELINE MODULE (After all previous modules are ready)
 # ================================================================
 
 module "codepipeline" {
@@ -111,7 +138,7 @@ module "codepipeline" {
   aws_region                   = var.aws_region
   common_tags                  = var.common_tags
 
-  depends_on = [module.network, module.ecr, module.codebuild, module.ecs, aws_iam_role.codepipeline]
+  depends_on = [module.network, module.msk, module.ecr, module.codebuild, module.ecs, aws_iam_role.codepipeline]
 }
 
 # ================================================================
@@ -124,6 +151,16 @@ output "deployment_summary" {
     # Network information
     vpc_id                = module.network.vpc_id
     load_balancer_dns     = module.network.load_balancer_dns_name
+    
+    # MSK cluster information
+    msk_cluster = {
+      cluster_name              = module.msk.cluster_name
+      cluster_arn              = module.msk.cluster_arn
+      bootstrap_brokers        = module.msk.bootstrap_brokers
+      bootstrap_brokers_tls    = module.msk.bootstrap_brokers_tls
+      zookeeper_connect_string = module.msk.zookeeper_connect_string
+      kafka_version           = module.msk.kafka_version
+    }
     
     # ECR repositories
     ecr_repositories      = module.ecr.repositories

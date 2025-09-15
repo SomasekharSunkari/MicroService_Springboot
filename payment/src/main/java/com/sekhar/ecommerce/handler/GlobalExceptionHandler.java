@@ -1,7 +1,8 @@
 package com.sekhar.ecommerce.handler;
 
-import com.sekhar.ecommerce.exception.BussinessEception;
+import com.sekhar.ecommerce.exception.BusinessException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -36,8 +38,8 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(errors));
     }
 
-    @ExceptionHandler(BussinessEception.class)
-    public ResponseEntity<String> handle(BussinessEception exp) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<String> handle(BusinessException exp) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(exp.getMsg());

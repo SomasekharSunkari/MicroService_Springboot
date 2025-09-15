@@ -1,8 +1,13 @@
 package com.sekhar.ecommerce.handler;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public record ErrorResponse(
-        Map<String,String> errors
+        LocalDateTime timestamp,
+        int status,
+        String error,
+        String message,
+        Map<String,String> validationErrors
 ) {
 }

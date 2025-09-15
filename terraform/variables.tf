@@ -94,6 +94,78 @@ variable "load_balancer_config" {
   })
 }
 
+# MSK Configuration
+variable "msk_config" {
+  description = "MSK cluster configuration"
+  type = object({
+    kafka_version            = optional(string, "3.5.1")
+    instance_type           = optional(string, "kafka.m7g.large")
+    broker_count            = optional(number, 3)
+    storage_volume_size     = optional(number, 1000)
+    enable_cloudwatch_logs  = optional(bool, false)
+    log_retention_days      = optional(number, 7)
+    enable_jmx_exporter     = optional(bool, false)
+    enable_node_exporter    = optional(bool, false)
+    client_broker_encryption = optional(string, "TLS_PLAINTEXT")
+  })
+  default = {
+    kafka_version            = "3.5.1"
+    instance_type           = "kafka.m7g.large"
+    broker_count            = 3
+    storage_volume_size     = 1000
+    enable_cloudwatch_logs  = false
+    log_retention_days      = 7
+    enable_jmx_exporter     = false
+    enable_node_exporter    = false
+    client_broker_encryption = "TLS_PLAINTEXT"
+  }
+}
+
+# ECS Auto Scaling Configuration
+variable "ecs_autoscaling_config" {
+  description = "ECS services auto scaling configuration"
+  type = object({
+    min_capacity                     = optional(number, 1)
+    max_capacity                     = optional(number, 10)
+    scale_up_adjustment              = optional(number, 1)
+    scale_down_adjustment            = optional(number, -1)
+    scale_up_cooldown               = optional(number, 300)
+    scale_down_cooldown             = optional(number, 300)
+    cpu_high_threshold              = optional(number, 70)
+    cpu_low_threshold               = optional(number, 30)
+    memory_high_threshold           = optional(number, 70)
+    memory_low_threshold            = optional(number, 30)
+    cpu_high_evaluation_periods     = optional(number, 2)
+    cpu_low_evaluation_periods      = optional(number, 2)
+    memory_high_evaluation_periods  = optional(number, 2)
+    memory_low_evaluation_periods   = optional(number, 2)
+    cpu_high_period                 = optional(number, 300)
+    cpu_low_period                  = optional(number, 300)
+    memory_high_period              = optional(number, 300)
+    memory_low_period               = optional(number, 300)
+  })
+  default = {
+    min_capacity                     = 1
+    max_capacity                     = 10
+    scale_up_adjustment              = 1
+    scale_down_adjustment            = -1
+    scale_up_cooldown               = 300
+    scale_down_cooldown             = 300
+    cpu_high_threshold              = 70
+    cpu_low_threshold               = 30
+    memory_high_threshold           = 70
+    memory_low_threshold            = 30
+    cpu_high_evaluation_periods     = 2
+    cpu_low_evaluation_periods      = 2
+    memory_high_evaluation_periods  = 2
+    memory_low_evaluation_periods   = 2
+    cpu_high_period                 = 300
+    cpu_low_period                  = 300
+    memory_high_period              = 300
+    memory_low_period               = 300
+  }
+}
+
 # GitHub Configuration
 variable "github_repository_url" {
   description = "GitHub repository URL"
