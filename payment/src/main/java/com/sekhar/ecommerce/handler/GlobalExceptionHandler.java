@@ -35,7 +35,13 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(BAD_REQUEST)
-                .body(new ErrorResponse(errors));
+                .body(new ErrorResponse(
+                        LocalDateTime.now(),
+                        BAD_REQUEST.value(),
+                        "Bad Request",
+                        "Validation failed",
+                        errors
+                ));
     }
 
     @ExceptionHandler(BusinessException.class)
