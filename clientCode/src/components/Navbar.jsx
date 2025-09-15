@@ -33,7 +33,7 @@ const NavBar = ({
     try {
       if (!isSignIn) {
         // Registration
-        const response = await fetch('http://public-ms-balancer-968609518.eu-north-1.elb.amazonaws.com/api/v1/auth/register', {
+        const response = await fetch('http://public-ms-balancer-992743410.us-east-1.elb.amazonaws.com/api/v1/auth/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ const NavBar = ({
         setFormData({ ...formData, name: '' });
       } else {
         // Login
-        const response = await fetch('http://public-ms-balancer-968609518.eu-north-1.elb.amazonaws.com/api/v1/auth/token', {
+        const response = await fetch('http://public-ms-balancer-992743410.us-east-1.elb.amazonaws.com/api/v1/auth/token', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

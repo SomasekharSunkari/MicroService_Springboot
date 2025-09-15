@@ -126,11 +126,11 @@ Each CodePipeline is configured to trigger on:
 ## 🌐 Service Access
 
 ### Public Services (via Load Balancer):
-- **Client Service**: `http://public-ms-balancer-968609518.eu-north-1.elb.amazonaws.com/`
-- **Auth Service**: `http://public-ms-balancer-968609518.eu-north-1.elb.amazonaws.com/auth`
-- **Order Service**: `http://public-ms-balancer-968609518.eu-north-1.elb.amazonaws.com/order`
-- **Payment Service**: `http://public-ms-balancer-968609518.eu-north-1.elb.amazonaws.com/payment`
-- **Product Service**: `http://public-ms-balancer-968609518.eu-north-1.elb.amazonaws.com/product`
+- **Client Service**: `http://public-ms-balancer-992743410.us-east-1.elb.amazonaws.com/`
+- **Auth Service**: `http://public-ms-balancer-992743410.us-east-1.elb.amazonaws.com/auth`
+- **Order Service**: `http://public-ms-balancer-992743410.us-east-1.elb.amazonaws.com/order`
+- **Payment Service**: `http://public-ms-balancer-992743410.us-east-1.elb.amazonaws.com/payment`
+- **Product Service**: `http://public-ms-balancer-992743410.us-east-1.elb.amazonaws.com/product`
 
 ### Internal Services (Service Discovery):
 - **Config Server**: `config-server.microservices-ecommerce.local:8888`
