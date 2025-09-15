@@ -39,6 +39,6 @@ server:
 
 application:
   config:
-    customer-url: http://authservice.product-ms.local:8787/api/v1/auth/users
-    payment-url: http://paymentsvc-ms.product-ms.local:8060/api/v1/payments
-    product-url: http://productsvc-ms.product-ms.local:8050/api/v1/products
+    customer-url: http://auth-service.microservices-ecommerce.local:8787/api/v1/auth/users
+    payment-url: http://payment-service.microservices-ecommerce.local:8060/api/v1/payments
+    product-url: http://product-api.microservices-ecommerce.local:8050/api/v1/products
