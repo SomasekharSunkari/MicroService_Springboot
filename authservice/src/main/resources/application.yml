@@ -3,6 +3,9 @@ spring:
     name: auth-service
 
   datasource:
+    # url: ${DB_URL}
+    # username: ${DB_USERNAME}
+    # password: ${DB_PASSWORD}
     url: jdbc:postgresql://database-1.c9yig4a82pxl.eu-north-1.rds.amazonaws.com:5432/users
     username: postgres
     password: Sekharamma123

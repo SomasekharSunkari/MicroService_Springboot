@@ -19,7 +19,8 @@ spring:
         format_sql: true
 
   kafka:
-    bootstrap-servers: b-2.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092,b-2.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092,b-3.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092
+    # bootstrap-servers: b-2.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092,b-2.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092,b-3.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092
+    bootstrap-servers: b-1.publiccluster.qwlyp0.c8.kafka.us-east-1.amazonaws.com:9092,b-2.publiccluster.qwlyp0.c8.kafka.us-east-1.amazonaws.com:9092,b-3.publiccluster.qwlyp0.c8.kafka.us-east-1.amazonaws.com:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -39,6 +40,9 @@ server:
 
 application:
   config:
-    customer-url: http://auth-service.microservices-ecommerce.local:8787/api/v1/auth/users
-    payment-url: http://payment-service.microservices-ecommerce.local:8060/api/v1/payments
-    product-url: http://product-api.microservices-ecommerce.local:8050/api/v1/products
+    # customer-url: http://auth-service.microservices-ecommerce.local:8787/api/v1/auth/users
+    # payment-url: http://payment-service.microservices-ecommerce.local:8060/api/v1/payments
+    # product-url: http://product-api.microservices-ecommerce.local:8050/api/v1/products
+    customer-url: http://auth-service.ecommerce.svc.cluster.local:8787/api/v1/auth/users
+    payment-url: http://payment-service.ecommerce.svc.cluster.local:8060/api/v1/payments
+    product-url: http://product-service.ecommerce.svc.cluster.local:8050/api/v1/products

@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-deployment
+  namespace: ecommerce
+  labels:
+    app: order-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+      - name: order-service
+        image: 068856380156.dkr.ecr.us-east-1.amazonaws.com/order-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8070
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://database-1.c9yig4a82pxl.eu-north-1.rds.amazonaws.com:5432/orders"
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: database-config
+              key: DB_USERNAME
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: DB_PASSWORD
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          value: "org.postgresql.Driver"
+        - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+          valueFrom:
+            configMapKeyRef:
+              name: kafka-config
+              key: KAFKA_BOOTSTRAP_SERVERS
+        - name: APPLICATION_CONFIG_CUSTOMER_URL
+          value: "http://auth-service.ecommerce.svc.cluster.local:8787/api/v1/auth/users"
+        - name: APPLICATION_CONFIG_PAYMENT_URL
+          value: "http://payment-service.ecommerce.svc.cluster.local:8060/api/v1/payments"
+        - name: APPLICATION_CONFIG_PRODUCT_URL
+          value: "http://product-service.ecommerce.svc.cluster.local:8050/api/v1/products"
+        - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+          valueFrom:
+            configMapKeyRef:
+              name: service-urls
+              key: DISCOVERY_SERVER_URL
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8070
+          initialDelaySeconds: 120
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8070
+          initialDelaySeconds: 60
+          periodSeconds: 10

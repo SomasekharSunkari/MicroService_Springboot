@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-config
+  namespace: ecommerce
+data:
+  DB_HOST: "database-1.c9yig4a82pxl.eu-north-1.rds.amazonaws.com"
+  DB_PORT: "5432"
+  DB_USERNAME: "postgres"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-config
+  namespace: ecommerce
+data:
+  KAFKA_BOOTSTRAP_SERVERS: "b-2.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092,b-2.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092,b-3.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-urls
+  namespace: ecommerce
+data:
+  CONFIG_SERVER_URL: "http://configserver-service:8888"
+  DISCOVERY_SERVER_URL: "http://discovery-service:8761/eureka"
+  # Internal service URLs using Kubernetes DNS (based on your ECS .microservices-ecommerce.local pattern)
+  AUTH_SERVICE_URL: "http://auth-service.ecommerce.svc.cluster.local:8787/api/v1/auth/users"
+  PAYMENT_SERVICE_URL: "http://payment-service.ecommerce.svc.cluster.local:8060/api/v1/payments"
+  PRODUCT_SERVICE_URL: "http://product-service.ecommerce.svc.cluster.local:8050/api/v1/products"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mail-config
+  namespace: ecommerce
+data:
+  MAIL_HOST: "smtp.gmail.com"
+  MAIL_PORT: "587"
+  MAIL_USERNAME: "sunkarisekhar36@gmail.com"

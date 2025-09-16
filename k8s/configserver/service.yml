@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: configserver-service
+  namespace: ecommerce
+  labels:
+    app: configserver
+spec:
+  selector:
+    app: configserver
+  ports:
+  - name: http
+    port: 8888
+    targetPort: 8888
+    protocol: TCP
+  type: ClusterIP

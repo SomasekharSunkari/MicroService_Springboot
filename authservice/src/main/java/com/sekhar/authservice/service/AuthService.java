@@ -22,6 +22,10 @@ public class AuthService {
 
 
     public Map<String, String> saveUser(UserCredential credential) {
+        if(credential == null){
+            throw  new NullPointerException("Credentials cannot be Null");
+
+        }
         credential.setPassword(passwordEncoder.encode(credential.getPassword()));
         repository.save(credential);
         return Map.of("message", "user added to the system");
