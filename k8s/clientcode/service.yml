@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: clientcode-service
-  namespace: ecommerce
+  namespace: jenkins
   labels:
     app: clientcode
 spec:

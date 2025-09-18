@@ -6,7 +6,7 @@ metadata:
   labels:
     app: gateway
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: gateway
@@ -53,3 +53,5 @@ spec:
             port: 8222
           initialDelaySeconds: 60
           periodSeconds: 10
+      imagePullSecrets:
+        - name: ecr-registry-secret

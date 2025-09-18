@@ -2,11 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: clientcode-deployment
-  namespace: ecommerce
+  namespace: jenkins
   labels:
     app: clientcode
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
       app: clientcode
@@ -15,17 +20,20 @@ spec:
       labels:
         app: clientcode
     spec:
+      # nodeSelector:
+      #    agentpool: amdpool
       containers:
       - name: clientcode
-        image: 068856380156.dkr.ecr.us-east-1.amazonaws.com/client-service:latest
+        image: sunkarisomasekhar/client-svc:v4
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
-        env:
-        - name: VITE_API_BASE_URL
-          value: "http://gateway-service:8222"
-        - name: NGINX_PORT
-          value: "80"
+     
+        # env:
+        # - name: VITE_API_BASE_URL
+        #   value: "http://gateway-service:8222"
+        # - name: NGINX_PORT
+        #   value: "80"
         resources:
           requests:
             memory: "128Mi"
@@ -45,3 +53,7 @@ spec:
             port: 80
           initialDelaySeconds: 15
           periodSeconds: 10
+      restartPolicy: Always
+
+      # imagePullSecrets:
+      #   - name: ecr-clientcode-secret

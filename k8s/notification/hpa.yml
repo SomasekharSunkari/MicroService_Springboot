@@ -2,7 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: notification-service-hpa
-  namespace: ecommerce
+  namespace: jenkins
   labels:
     app: notification-service
 spec:
@@ -10,7 +10,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: notification-service-deployment
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 8
   metrics:
   - type: Resource

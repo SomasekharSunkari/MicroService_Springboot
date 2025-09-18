@@ -2,11 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: order-service-deployment
-  namespace: ecommerce
+  namespace: jenkins
   labels:
     app: order-service
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
       app: order-service
@@ -15,43 +20,45 @@ spec:
       labels:
         app: order-service
     spec:
+      # nodeSelector:
+      #   agentpool: amdpool
       containers:
       - name: order-service
-        image: 068856380156.dkr.ecr.us-east-1.amazonaws.com/order-service:latest
+        image: sunkarisomasekhar/order-svc:v2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8070
-        env:
-        - name: SPRING_DATASOURCE_URL
-          value: "jdbc:postgresql://database-1.c9yig4a82pxl.eu-north-1.rds.amazonaws.com:5432/orders"
-        - name: SPRING_DATASOURCE_USERNAME
-          valueFrom:
-            configMapKeyRef:
-              name: database-config
-              key: DB_USERNAME
-        - name: SPRING_DATASOURCE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: database-secrets
-              key: DB_PASSWORD
-        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
-          value: "org.postgresql.Driver"
-        - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-          valueFrom:
-            configMapKeyRef:
-              name: kafka-config
-              key: KAFKA_BOOTSTRAP_SERVERS
-        - name: APPLICATION_CONFIG_CUSTOMER_URL
-          value: "http://auth-service.ecommerce.svc.cluster.local:8787/api/v1/auth/users"
-        - name: APPLICATION_CONFIG_PAYMENT_URL
-          value: "http://payment-service.ecommerce.svc.cluster.local:8060/api/v1/payments"
-        - name: APPLICATION_CONFIG_PRODUCT_URL
-          value: "http://product-service.ecommerce.svc.cluster.local:8050/api/v1/products"
-        - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
-          valueFrom:
-            configMapKeyRef:
-              name: service-urls
-              key: DISCOVERY_SERVER_URL
+        # env:
+        # - name: SPRING_DATASOURCE_URL
+        #   value: "jdbc:postgresql://database-1.c9yig4a82pxl.eu-north-1.rds.amazonaws.com:5432/orders"
+        # - name: SPRING_DATASOURCE_USERNAME
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: database-config
+        #       key: DB_USERNAME
+        # - name: SPRING_DATASOURCE_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: database-secrets
+        #       key: DB_PASSWORD
+        # - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+        #   value: "org.postgresql.Driver"
+        # - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: kafka-config
+        #       key: KAFKA_BOOTSTRAP_SERVERS
+        # - name: APPLICATION_CONFIG_CUSTOMER_URL
+        #   value: "http://auth-service.ecommerce.svc.cluster.local:8787/api/v1/auth/users"
+        # - name: APPLICATION_CONFIG_PAYMENT_URL
+        #   value: "http://payment-service.ecommerce.svc.cluster.local:8060/api/v1/payments"
+        # - name: APPLICATION_CONFIG_PRODUCT_URL
+        #   value: "http://product-service.ecommerce.svc.cluster.local:8050/api/v1/products"
+        # - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: service-urls
+        #       key: DISCOVERY_SERVER_URL
         resources:
           requests:
             memory: "512Mi"
@@ -71,3 +78,5 @@ spec:
             port: 8070
           initialDelaySeconds: 60
           periodSeconds: 10
+      # imagePullSecrets:
+      #   - name: ecr-order-secret

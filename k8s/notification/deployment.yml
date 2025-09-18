@@ -2,11 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: notification-service-deployment
-  namespace: ecommerce
+  namespace: jenkins
   labels:
     app: notification-service
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
       app: notification-service
@@ -15,43 +20,45 @@ spec:
       labels:
         app: notification-service
     spec:
+      # nodeSelector:
+      #   agentpool: amdpool
       containers:
       - name: notification-service
-        image: 068856380156.dkr.ecr.us-east-1.amazonaws.com/notification-service:latest
+        image: sunkarisomasekhar/notification:v2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8040
-        env:
-        - name: SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS
-          valueFrom:
-            configMapKeyRef:
-              name: kafka-config
-              key: KAFKA_BOOTSTRAP_SERVERS
-        - name: SPRING_MAIL_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: mail-config
-              key: MAIL_HOST
-        - name: SPRING_MAIL_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: mail-config
-              key: MAIL_PORT
-        - name: SPRING_MAIL_USERNAME
-          valueFrom:
-            configMapKeyRef:
-              name: mail-config
-              key: MAIL_USERNAME
-        - name: SPRING_MAIL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mail-secrets
-              key: MAIL_PASSWORD
-        - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
-          valueFrom:
-            configMapKeyRef:
-              name: service-urls
-              key: DISCOVERY_SERVER_URL
+        # env:
+        # - name: SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: kafka-config
+        #       key: KAFKA_BOOTSTRAP_SERVERS
+        # - name: SPRING_MAIL_HOST
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: mail-config
+        #       key: MAIL_HOST
+        # - name: SPRING_MAIL_PORT
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: mail-config
+        #       key: MAIL_PORT
+        # - name: SPRING_MAIL_USERNAME
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: mail-config
+        #       key: MAIL_USERNAME
+        # - name: SPRING_MAIL_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: mail-secrets
+        #       key: MAIL_PASSWORD
+        # - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: service-urls
+        #       key: DISCOVERY_SERVER_URL
         resources:
           requests:
             memory: "256Mi"
@@ -71,3 +78,5 @@ spec:
             port: 8040
           initialDelaySeconds: 45
           periodSeconds: 10
+      # imagePullSecrets:
+      #   - name: ecr-notification-secret

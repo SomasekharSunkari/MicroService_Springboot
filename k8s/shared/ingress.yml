@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ecommerce-ingress
-  namespace: ecommerce
+  namespace: jenkins
   annotations:
     # Backend microservices expect full paths (/api/v1/auth/*, etc.)
     nginx.ingress.kubernetes.io/cors-allow-origin: "*"
@@ -12,7 +12,8 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - http:
+  - host: ecommerce.somasekhar.xyz
+    http:
       paths:
       # API routes
       - path: /api/v1/auth

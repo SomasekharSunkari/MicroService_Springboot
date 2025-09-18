@@ -2,11 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: product-service-deployment
-  namespace: ecommerce
+  namespace: jenkins
   labels:
     app: product-service
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
       app: product-service
@@ -15,32 +20,34 @@ spec:
       labels:
         app: product-service
     spec:
+      # nodeSelector:
+      #   agentpool: amdpool
       containers:
       - name: product-service
-        image: 068856380156.dkr.ecr.us-east-1.amazonaws.com/product-api:latest
+        image: sunkarisomasekhar/product-svc:v1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8050
-        env:
-        - name: SPRING_DATASOURCE_URL
-          value: "jdbc:postgresql://database-1.c9yig4a82pxl.eu-north-1.rds.amazonaws.com:5432/product"
-        - name: SPRING_DATASOURCE_USERNAME
-          valueFrom:
-            configMapKeyRef:
-              name: database-config
-              key: DB_USERNAME
-        - name: SPRING_DATASOURCE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: database-secrets
-              key: DB_PASSWORD
-        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
-          value: "org.postgresql.Driver"
-        - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
-          valueFrom:
-            configMapKeyRef:
-              name: service-urls
-              key: DISCOVERY_SERVER_URL
+        # env:
+        # - name: SPRING_DATASOURCE_URL
+        #   value: "jdbc:postgresql://database-1.c9yig4a82pxl.eu-north-1.rds.amazonaws.com:5432/product"
+        # - name: SPRING_DATASOURCE_USERNAME
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: database-config
+        #       key: DB_USERNAME
+        # - name: SPRING_DATASOURCE_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: database-secrets
+        #       key: DB_PASSWORD
+        # - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+        #   value: "org.postgresql.Driver"
+        # - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: service-urls
+        #       key: DISCOVERY_SERVER_URL
         resources:
           requests:
             memory: "512Mi"
@@ -60,3 +67,5 @@ spec:
             port: 8050
           initialDelaySeconds: 60
           periodSeconds: 10
+      # imagePullSecrets:
+      #   - name: ecr-product-secret

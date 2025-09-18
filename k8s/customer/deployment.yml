@@ -6,7 +6,7 @@ metadata:
   labels:
     app: customer-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: customer-service
@@ -51,3 +51,5 @@ spec:
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 10
+      imagePullSecrets:
+        - name: ecr-registry-secret

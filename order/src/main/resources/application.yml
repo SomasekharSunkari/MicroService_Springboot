@@ -20,7 +20,7 @@ spring:
 
   kafka:
     # bootstrap-servers: b-2.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092,b-2.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092,b-3.microservicesecommerce.nmefo7.c8.kafka.us-east-1.amazonaws.com:9092
-    bootstrap-servers: b-1.publiccluster.qwlyp0.c8.kafka.us-east-1.amazonaws.com:9092,b-2.publiccluster.qwlyp0.c8.kafka.us-east-1.amazonaws.com:9092,b-3.publiccluster.qwlyp0.c8.kafka.us-east-1.amazonaws.com:9092
+    bootstrap-servers: b-1.myapplication.87q8mv.c4.kafka.eu-north-1.amazonaws.com:9092,b-2.myapplication.87q8mv.c4.kafka.eu-north-1.amazonaws.com:9092,b-3.myapplication.87q8mv.c4.kafka.eu-north-1.amazonaws.com:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
