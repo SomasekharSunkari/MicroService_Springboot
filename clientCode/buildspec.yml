@@ -4,7 +4,7 @@ phases:
   pre_build:
     commands:
       - echo "Starting Pre-Build Phase"
-      - echo "Logging into Amazon ECR"
+      - echo "Logging into Amazon ECR"  
       - aws --version
       - REPO_URI=068856380156.dkr.ecr.us-east-1.amazonaws.com/client-service
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPO_URI
