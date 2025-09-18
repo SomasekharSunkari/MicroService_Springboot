@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: jenkins
+  labels:
+    app: auth-service
+spec:
+  selector:
+    app: auth-service
+  ports:
+  - name: http
+    port: 8787
+    targetPort: 8787
+    protocol: TCP
+  type: ClusterIP
