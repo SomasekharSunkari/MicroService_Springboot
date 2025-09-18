@@ -16,7 +16,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('jwt_token');
+    const token = localStorage.getItem('jwt_token');   
     setIsAuthenticated(!!token);
   }, []);
 

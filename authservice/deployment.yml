@@ -14,7 +14,7 @@ spec:
       maxSurge: 1
   selector:
     matchLabels:
-      app: auth-serv
+      app: auth-service
   template:
     metadata:
       labels:
