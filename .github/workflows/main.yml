@@ -1,0 +1,23 @@
+name: Firstone
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment Environment"
+        required: true
+        default: "staging"
+      version:
+        description: "Version to Deploy"
+        required: true
+        default: "1.0.0"
+  push:
+    branches:
+      - main
+      - develop
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: chcekout repository
+        uses: actions/checkout@v3
