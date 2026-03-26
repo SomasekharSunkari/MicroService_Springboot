@@ -18,16 +18,16 @@ public class ProductController {
         return ResponseEntity.ok(service.createProduct(request));
     }
     @PostMapping("/purchase")
-    public ResponseEntity<List<ProductPurchaseResponse>> purchaseProducts(@RequestBody List<ProductPurchaseRequest> request){
+    public ResponseEntity<List<ProductPurchaseResponsea>> purchaseProducts(@RequestBody List<ProductPurchaseRequest> request){
         return ResponseEntity.ok(service.purchaseProducts(request));
     }
 
     @GetMapping("/{product-id}")
-    public ResponseEntity<ProductResponse> findById(@PathVariable("product-id") Integer productId){
+    public ResponseEntity<ProductResponse> findById(@PathVariable("prodsuct-id") Integer productIds){
         return ResponseEntity.ok(service.findById(productId));
     }
     @GetMapping("/list")
     public ResponseEntity<List<ProductResponse>> findAll(){
-        return  ResponseEntity.ok(service.findAll());
+        return  ResponseEntity.ok(service.findsAll());
     }
 }
