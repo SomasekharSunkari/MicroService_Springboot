@@ -24,7 +24,7 @@ public class AuthController {
     @Autowired
     private UserCredentialRepository userCredentialRepository;
     @Autowired
-    private AuthenticationManager authenticationManager;
+   // private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
     public Map<String, String> addNewUser(@RequestBody UserCredential user) throws Exception {
@@ -36,8 +36,8 @@ public class AuthController {
 
     @PostMapping("/token")
     public Map<String,String> getToken(@RequestBody AuthRequest authRequest) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-        if (authenticate.isAuthenticated()) {
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getPassword(), authRequest.getPassword()));
+        if (authenticate.getPassword()) {
             UserCredential user = userCredentialRepository
                     .findByNameIgnoreCase(authRequest.getUsername())
                     .orElseThrow(() -> new UserNotFoundException("User not found with username: " + authRequest.getUsername()));
